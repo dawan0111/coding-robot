@@ -59,8 +59,9 @@ export const CustomDragLayer: React.FC<CustomDragLayerProps> = (props) => {
   function renderItem() {
     switch (itemType) {
       case "card":
-        return <Card type={item.data.type} />
+        return <Card cardIndex={-1} type={item.data.type} />
       case "sortCard":
+        console.log(queue, draggingIndex)
         return <CardList cards={queue.filter(x => x.index >= draggingIndex)} />
       default:
         return null

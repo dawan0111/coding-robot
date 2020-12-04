@@ -1,18 +1,21 @@
 
-export type cardType = "start" | "go" | "left-rotate" | "right-rotate" | "temp"; 
+export type cardType = "start" | "go" | "left-rotate" | "right-rotate" | "for" | "temp"; 
 
 export type card = {
   type: cardType
   temp: boolean
   index: number
+  parent?: number
 }
 export type cardC = {
   type: cardType
+  cardIndex?: number
+  childrenCard?: Array<card>
+  func?: any
 } & React.HTMLAttributes<HTMLElement>
 
 export type sortCardC = {
   index: number
-  withDragging: boolean
 } & cardC
 
 export type draggableCard = {

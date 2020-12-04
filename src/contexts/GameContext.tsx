@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { drop } from 'lodash'
 import React from 'react'
 import { card, cardType } from '../types/card'
 
@@ -16,7 +16,7 @@ interface valueT {
 
   changePage: (page: pageT) => void
 
-  addQueue: (type: cardType, temp?: boolean) => void
+  addQueue: (type: cardType, parent?: number, temp?: boolean) => void
   updateQueue: (index: number, payload: card) => void
   deleteQueue: (index: number) => void
   deleteNextQueue: (index: number) => void
@@ -48,7 +48,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     setQueue(
       queue.reduce((acc, val) => (
         [...acc, {
-          type: val.type,
+          ...val,
           index: currentIndex++,
           temp: false,
         }]
@@ -56,11 +56,12 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     )
   }, [])
 
-  const addQueue = React.useCallback((type: cardType, temp?: boolean) => {
+  const addQueue = React.useCallback((type: cardType, parent?: number, temp?: boolean) => {
     setQueue(queue => ([
       ...queue,
       {
         type,
+        parent,
         index: queue.length,
         temp: temp === undefined ? false : true
       }
@@ -83,8 +84,9 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   }, [reSortSetQueue, queue])
 
   const replaceQueue = React.useCallback((draggingIndex:number, droppingIndex:number) => {
-    const movingQueue = queue.filter(x => x.index >= draggingIndex);
     const putIndex = _.findIndex(queue, ['index', droppingIndex])
+    const movingQueue = queue
+      .filter(x => x.index >= draggingIndex)
 
     let changeQueue = queue.reduce((acc, val, index) => {
       if (putIndex === index) acc = [...acc, ...movingQueue]
@@ -125,6 +127,10 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   const changeDraggingIndex = React.useCallback((index: number) => {
     setDraggingIndex(index)
   }, [])
+
+  React.useEffect(() => {
+    console.log(queue)
+  }, [queue])
 
   return (
     <GameContext.Provider value={{

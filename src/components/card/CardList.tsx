@@ -1,27 +1,69 @@
 import React from 'react'
+import { useDrop } from 'react-dnd'
 import styled from 'styled-components'
-import { card, cardSortEvent } from '../../types/card'
+import AudioPlayerContext from '../../contexts/AudioContext'
+import GameContext from '../../contexts/GameContext'
+import { card, cardSortEvent, draggableCard } from '../../types/card'
 import Card from './Card'
 import SortableCard from './SortableCard'
 
 const Wrapper = styled.div`
   display: flex;
-  flex: 1;
+  width: 100%;
+  height: 100%;
   font-size: 0;
 `
 
 type Props = {
-  cards: Array<card>,
+  cards?: Array<card>
+  parent?: number
 }
 
-type SortProps = {
-  draggingIndex: number
-} & cardSortEvent & Props
+export function SortCardList({ parent }: Props) { 
+  const {
+    queue,
+    tempQueue,
+    addQueue, 
+    deleteQueue,
+    reSortSetQueue
+  } = React.useContext(GameContext)
 
-export function SortCardList({ cards, draggingIndex, ...props }: SortProps) {
+  const { play } = React.useContext(AudioPlayerContext)
+
+  const [{ hovered, item }, drop] = useDrop({
+    accept: "card",
+
+    hover() {
+      console.log("aaa")
+    },
+
+    drop(item: draggableCard, monitor) {
+      if (monitor.didDrop()) return;
+
+      play('drop')
+      reSortSetQueue(queue)
+      return undefined
+    },
+
+    collect: (monitor) => ({
+      hovered: monitor.isOver(),
+      item: monitor.getItem(),
+    }),
+  })
+
+  React.useEffect(() => {
+    if (parent === undefined) {
+      if (!tempQueue && hovered) {
+        addQueue(item.data.type, parent, true)
+      } else if (tempQueue && !hovered) {
+        deleteQueue(tempQueue.index);
+      }
+    }
+  }, [hovered])
+
   return (
-    <Wrapper>
-      {cards.map((val, k) => (
+    <Wrapper ref={drop}>
+      {queue.filter(x => x.parent === parent).map((val, k) => (
         <div
           key={val.index}
           style={{
@@ -30,9 +72,8 @@ export function SortCardList({ cards, draggingIndex, ...props }: SortProps) {
           }}
         >
           <SortableCard
-            {...props}
-            withDragging={val.index >= draggingIndex}
             type={val.type}
+            cardIndex={val.index}
             index={k}
           />
         </div>
@@ -41,7 +82,7 @@ export function SortCardList({ cards, draggingIndex, ...props }: SortProps) {
   )
 }
 
-export default function CardList({ cards }: Props) {
+export default function CardList({ cards = [] }: Props) {
   return (
     <Wrapper>
       {cards.map((val, k) => (
@@ -53,6 +94,7 @@ export default function CardList({ cards }: Props) {
           }}
         >
           <Card
+            cardIndex={val.index}
             type={val.type}
           />
         </div>

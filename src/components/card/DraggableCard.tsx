@@ -24,7 +24,7 @@ export default function DraggableCard({ type, val }: Props) {
 
   return (
     <div ref={drag}>
-      <Card type={type} />
+      <Card type={type} cardIndex={-1} />
     </div>
   )
 }

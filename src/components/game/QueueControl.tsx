@@ -8,6 +8,7 @@ import Card from '../card/Card'
 import playImg from '../../images/play.svg'
 import GameContext from '../../contexts/GameContext'
 import { SortCardList } from '../card/CardList'
+import AudioPlayerContext from '../../contexts/AudioContext'
 
 const QueueForm = styled.div`
   display: flex;
@@ -87,62 +88,14 @@ const PlayBtnWrapper = styled.div<{pushing: boolean}>`
 `
 
 export default function QueueControl() {
-  const {
-      queue,
-      tempQueue,
-      draggingIndex,
-      addQueue, 
-      updateQueue,
-      deleteQueue,
-      replaceQueue,
-      changeDraggingIndex,
-      reSortSetQueue
-  } = React.useContext(GameContext)
   const [pushing, setPushing] = React.useState(false)
-
-  const [{ hovered, item }, drop] = useDrop({
-    accept: "card",
-    drop(item: draggableCard, monitor) {
-      reSortSetQueue(queue)
-      return undefined
-    },
-
-    collect: (monitor) => ({
-      hovered: monitor.isOver(),
-      item: monitor.getItem()
-    }),
-  })
-
-  React.useEffect(() => {
-    if (!tempQueue && hovered) {
-      addQueue(item.data.type, true)
-    } else if (tempQueue && !hovered) {
-      deleteQueue(tempQueue.index);
-    }
-  }, [item, addQueue, deleteQueue, tempQueue, hovered])
 
   return (
     <QueueForm>
       <QueueWrapper>
         <Card type="start" />
-        <Queue ref={drop}>
-          <SortCardList
-            draggingIndex={draggingIndex}
-            cards={[...queue, {
-              type: 'temp',
-              index: queue.length,
-              temp: false,
-            }]}
-            updateCard={(index: number) => {
-              if (tempQueue) {
-                replaceQueue(tempQueue.index, index)
-              }
-            }}
-            dropCard={() => reSortSetQueue(queue)}
-            changeDraggingIndex={changeDraggingIndex}
-            moveCard={replaceQueue}
-            addingCard={(index: number) => {}}
-          />
+        <Queue>
+          <SortCardList />
         </Queue>
       </QueueWrapper>
       <PlayBtn

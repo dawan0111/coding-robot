@@ -9,6 +9,7 @@ import BluetoothButton from "./game/BluetoothButton";
 
 import Control from "./game/Control";
 import { CustomDragLayer } from "./game/CustomDragLayer";
+import AudioPlayerContext from "../contexts/AudioContext";
 
 const Wrapper = styled.div`
   display: flex;
@@ -86,6 +87,13 @@ function MapEdit() {
 }
 
 export default function Game() {
+  const { play } = React.useContext(AudioPlayerContext)
+
+  React.useEffect(() => {
+    play("bgm", {
+      loop: true
+    })
+  }, [])
 
   return (
     <GameContextProvider>

@@ -3,16 +3,28 @@ import { getEmptyImage } from 'react-dnd-html5-backend'
 import { useDrag, DragSourceMonitor, XYCoord, useDrop } from 'react-dnd'
 
 import Card from './Card'
-import { cardSortEvent, draggableCard, sortCardC } from '../../types/card'
+import { draggableCard, sortCardC } from '../../types/card'
+import GameContext from '../../contexts/GameContext'
 
 
 export default function SortableCard({
-  type, index, withDragging , moveCard, changeDraggingIndex, dropCard, updateCard }: sortCardC & cardSortEvent) {
+  type, index, cardIndex
+}: sortCardC) {
+  const {
+    queue,
+    tempQueue,
+    draggingIndex,
+
+    replaceQueue,
+    changeDraggingIndex,
+    reSortSetQueue
+} = React.useContext(GameContext)
+
   const ref = React.useRef<HTMLDivElement>(null);
   const [, drop] = useDrop({
     accept: ["card", "sortCard"],
     drop() {
-      dropCard()
+      reSortSetQueue(queue)
     },
     hover(item: draggableCard, monitor) {
       const dragIndex = item.index;
@@ -34,9 +46,11 @@ export default function SortableCard({
           return;
         }
         
-        moveCard(dragIndex, hoverIndex)
+        replaceQueue(dragIndex, hoverIndex)
       } else if (item.type === "card") {
-        updateCard(hoverIndex);
+        if (tempQueue) {
+          replaceQueue(tempQueue.index, index)
+        }
       }
     }
   });
@@ -65,11 +79,23 @@ export default function SortableCard({
 
   drag(drop(ref));
 
+  const withDragging = cardIndex && cardIndex >= draggingIndex;
   const opacity = (isDragging || withDragging) ? 0.5 : 1;
 
   return (
-    <div ref={ref} style={{ opacity }}>
-      <Card type={type} />
+    <div style={{ opacity, height: '100%', position: 'relative' }}>
+      <div ref={ref} style={{
+        position: 'absolute',
+        zIndex: 999,
+        left: 0,
+        top: 0,
+        width: type === "for" ? '1rem' : "100%",
+        height: '100%'
+      }}></div>
+      <Card
+        cardIndex={index}
+        type={type}
+      />
     </div>
   )
 }

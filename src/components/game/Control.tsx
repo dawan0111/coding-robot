@@ -35,12 +35,12 @@ const ItemWrapper = styled.div`
   background: #48baa4;
 
   & > div {
-    margin-left: .2rem;
-    margin-right: .2rem;
+    margin-left: .5rem;
+    margin-right: .5rem;
   }
 `
 
-const usingCards: Array<cardType> = ["go", "left-rotate", "right-rotate"]
+const usingCards: Array<cardType> = ["go", "left-rotate", "right-rotate", "for"]
 
 export default function Control() {
   const { deleteNextQueue } = React.useContext(GameContext)
