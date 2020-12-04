@@ -26,7 +26,6 @@ export function SortCardList({ cards, draggingIndex, ...props }: SortProps) {
           key={val.index}
           style={{
             position: 'relative',
-            left: `${(k + 1) * -0.38}rem`,
             opacity: val.temp ? 0.5 : 1,
           }}
         >

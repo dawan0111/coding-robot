@@ -5,11 +5,16 @@ import { card, cardType } from '../types/card'
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 const windowNavigator: any = navigator
 
+type pageT = 'mapEdit' | 'game'
+
 interface valueT {
+  page: pageT
   queue: Array<card>
   tempQueue: card | undefined
   bluetoothConnect: boolean
   draggingIndex: number
+
+  changePage: (page: pageT) => void
 
   addQueue: (type: cardType, temp?: boolean) => void
   updateQueue: (index: number, payload: card) => void
@@ -28,6 +33,7 @@ const GameContext = React.createContext({} as valueT)
 export default GameContext
 
 export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
+  const [page, setPage] = React.useState<pageT>("mapEdit")
   const [queue, setQueue] = React.useState<Array<card>>([])
   const [bluetoothConnect, setBluetoothConnect] = React.useState(false)
   const [draggingIndex, setDraggingIndex] = React.useState(Infinity)
@@ -122,10 +128,13 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
 
   return (
     <GameContext.Provider value={{
+      page,
       queue,
       tempQueue,
       bluetoothConnect,
       draggingIndex,
+
+      changePage: setPage,
 
       addQueue,
       updateQueue,

@@ -22,7 +22,7 @@ const QueueForm = styled.div`
 const QueueWrapper = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  width: 50%;
+  width: 60%;
   overflow: auto;
 
   box-shadow: inset 1px 1px 1px rgba(0, 0, 0, .5);
@@ -46,8 +46,8 @@ const Queue = styled.div`
 const PlayBtn = styled.div`
   position: relative;
   z-index: 2;
-  width: 4rem;
-  height: 4rem;
+  width: 3.5rem;
+  height: 3.5rem;
   border-radius: 50%;
   font-size: 0;
 

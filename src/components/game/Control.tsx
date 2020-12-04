@@ -10,10 +10,18 @@ import QueueControl from "./QueueControl";
 import GameContext from "../../contexts/GameContext";
 
 const Wrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
   width: 100%;
+`
+
+const QueueControlWrapper = styled.div`
+  
+  width: 100%;
+  bottom: 100%;
 `
 
 const ItemWrapper = styled.div`
@@ -46,7 +54,9 @@ export default function Control() {
 
   return (
     <Wrapper>
-      <QueueControl />
+      <QueueControlWrapper>
+        <QueueControl />
+      </QueueControlWrapper>
       <ItemWrapper ref={drop}>
         {usingCards.map((card, k) => (
           <DraggableCard

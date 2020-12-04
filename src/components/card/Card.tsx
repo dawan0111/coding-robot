@@ -9,8 +9,8 @@ import { cardC } from "../../types/card";
 
 const Item = styled.div`
   position: relative;
-  width: 3.2rem;
-  height: 3rem;
+  width: 2.425rem;
+  height: 2.5rem;
   font-size: 0;
 
   img {
