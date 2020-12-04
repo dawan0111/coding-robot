@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/coding-robot/static/css/main.9f427dce.chunk.css",
-    "main.js": "/coding-robot/static/js/main.1b13b78c.chunk.js",
-    "main.js.map": "/coding-robot/static/js/main.1b13b78c.chunk.js.map",
+    "main.js": "/coding-robot/static/js/main.f1f45308.chunk.js",
+    "main.js.map": "/coding-robot/static/js/main.f1f45308.chunk.js.map",
     "runtime-main.js": "/coding-robot/static/js/runtime-main.8a3e3729.js",
     "runtime-main.js.map": "/coding-robot/static/js/runtime-main.8a3e3729.js.map",
-    "static/js/2.70edf253.chunk.js": "/coding-robot/static/js/2.70edf253.chunk.js",
-    "static/js/2.70edf253.chunk.js.map": "/coding-robot/static/js/2.70edf253.chunk.js.map",
+    "static/js/2.36a83607.chunk.js": "/coding-robot/static/js/2.36a83607.chunk.js",
+    "static/js/2.36a83607.chunk.js.map": "/coding-robot/static/js/2.36a83607.chunk.js.map",
     "static/js/3.67127f63.chunk.js": "/coding-robot/static/js/3.67127f63.chunk.js",
     "static/js/3.67127f63.chunk.js.map": "/coding-robot/static/js/3.67127f63.chunk.js.map",
     "index.html": "/coding-robot/index.html",
     "static/css/main.9f427dce.chunk.css.map": "/coding-robot/static/css/main.9f427dce.chunk.css.map",
-    "static/js/2.70edf253.chunk.js.LICENSE.txt": "/coding-robot/static/js/2.70edf253.chunk.js.LICENSE.txt",
+    "static/js/2.36a83607.chunk.js.LICENSE.txt": "/coding-robot/static/js/2.36a83607.chunk.js.LICENSE.txt",
     "static/media/go.b28a9fae.svg": "/coding-robot/static/media/go.b28a9fae.svg",
     "static/media/left-rotate.f9db7149.svg": "/coding-robot/static/media/left-rotate.f9db7149.svg",
     "static/media/play.b9298dae.svg": "/coding-robot/static/media/play.b9298dae.svg",
@@ -20,8 +20,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.8a3e3729.js",
-    "static/js/2.70edf253.chunk.js",
+    "static/js/2.36a83607.chunk.js",
     "static/css/main.9f427dce.chunk.css",
-    "static/js/main.1b13b78c.chunk.js"
+    "static/js/main.f1f45308.chunk.js"
   ]
 }
