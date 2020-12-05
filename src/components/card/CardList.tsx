@@ -1,17 +1,26 @@
+import { update } from 'lodash'
 import React from 'react'
 import { useDrop } from 'react-dnd'
 import styled from 'styled-components'
 import AudioPlayerContext from '../../contexts/AudioContext'
 import GameContext from '../../contexts/GameContext'
-import { card, cardSortEvent, draggableCard } from '../../types/card'
+import { card, cardSortEvent, cardType, draggableCard } from '../../types/card'
 import Card from './Card'
 import SortableCard from './SortableCard'
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ deps: number }>`
   display: flex;
   width: 100%;
   height: 100%;
   font-size: 0;
+
+  & .item:not(.for) {
+    width: ${props => `${2.45 - props.deps * 0.25}rem`};
+  }
+
+  & .item {
+    height: ${props => `${2.45 - props.deps * 0.25}rem`}
+  }
 `
 
 type Props = {
@@ -23,18 +32,29 @@ export function SortCardList({ parent }: Props) {
   const {
     queue,
     tempQueue,
+
     addQueue, 
     deleteQueue,
-    reSortSetQueue
+    reSortSetQueue,
+    getQueueDeps,
+    updateQueue
   } = React.useContext(GameContext)
 
   const { play } = React.useContext(AudioPlayerContext)
+  const deps = getQueueDeps(parent)
 
-  const [{ hovered, item }, drop] = useDrop({
+  console.log(deps)
+
+  const [{ hovered, item, isOverCurrent }, drop] = useDrop({
     accept: "card",
 
     hover() {
-      console.log("aaa")
+      if (isOverCurrent && tempQueue) {
+        updateQueue(tempQueue.index, {
+          ...tempQueue,
+          parent
+        })
+      }
     },
 
     drop(item: draggableCard, monitor) {
@@ -47,6 +67,7 @@ export function SortCardList({ parent }: Props) {
 
     collect: (monitor) => ({
       hovered: monitor.isOver(),
+      isOverCurrent: monitor.isOver({ shallow: true }),
       item: monitor.getItem(),
     }),
   })
@@ -62,8 +83,10 @@ export function SortCardList({ parent }: Props) {
   }, [hovered])
 
   return (
-    <Wrapper ref={drop}>
-      {queue.filter(x => x.parent === parent).map((val, k) => (
+    <Wrapper deps={deps} ref={drop}>
+      {[
+        ...queue.filter(x => x.parent === parent),
+      ].map((val, k) => (
         <div
           key={val.index}
           style={{
@@ -71,11 +94,22 @@ export function SortCardList({ parent }: Props) {
             opacity: val.temp ? 0.5 : 1,
           }}
         >
-          <SortableCard
-            type={val.type}
-            cardIndex={val.index}
-            index={k}
-          />
+          {
+            !val.temp ? (
+              <SortableCard
+                type={val.type}
+                cardIndex={val.index}
+                index={k}
+                temp={val.temp}
+              />
+            ) : (
+              <Card
+                cardIndex={val.index}
+                type={val.type}
+                temp={false}
+              />
+            )
+          }
         </div>
       ))}
     </Wrapper>
@@ -84,7 +118,7 @@ export function SortCardList({ parent }: Props) {
 
 export default function CardList({ cards = [] }: Props) {
   return (
-    <Wrapper>
+    <Wrapper deps={0}>
       {cards.map((val, k) => (
         <div
           key={k}
@@ -96,6 +130,7 @@ export default function CardList({ cards = [] }: Props) {
           <Card
             cardIndex={val.index}
             type={val.type}
+            temp={false}
           />
         </div>
       ))}

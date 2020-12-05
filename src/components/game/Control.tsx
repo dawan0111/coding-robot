@@ -19,7 +19,6 @@ const Wrapper = styled.div`
 `
 
 const QueueControlWrapper = styled.div`
-  
   width: 100%;
   bottom: 100%;
 `
@@ -43,11 +42,11 @@ const ItemWrapper = styled.div`
 const usingCards: Array<cardType> = ["go", "left-rotate", "right-rotate", "for"]
 
 export default function Control() {
-  const { deleteNextQueue } = React.useContext(GameContext)
+  const { deleteQueue } = React.useContext(GameContext)
   const [, drop] = useDrop({
     accept: "sortCard",
     drop(item: draggableCard) {
-      deleteNextQueue(item.index);
+      deleteQueue(item.index);
       return undefined
     },
   })

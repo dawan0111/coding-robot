@@ -9,8 +9,8 @@ export type card = {
 }
 export type cardC = {
   type: cardType
+  temp?: boolean
   cardIndex?: number
-  childrenCard?: Array<card>
   func?: any
 } & React.HTMLAttributes<HTMLElement>
 

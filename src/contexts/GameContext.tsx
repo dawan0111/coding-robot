@@ -17,6 +17,7 @@ interface valueT {
   changePage: (page: pageT) => void
 
   addQueue: (type: cardType, parent?: number, temp?: boolean) => void
+  getQueueDeps: (index: number | undefined) => number
   updateQueue: (index: number, payload: card) => void
   deleteQueue: (index: number) => void
   deleteNextQueue: (index: number) => void
@@ -35,6 +36,7 @@ export default GameContext
 export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   const [page, setPage] = React.useState<pageT>("mapEdit")
   const [queue, setQueue] = React.useState<Array<card>>([])
+  const [queueId, setQueueId] = React.useState(1)
   const [bluetoothConnect, setBluetoothConnect] = React.useState(false)
   const [draggingIndex, setDraggingIndex] = React.useState(Infinity)
 
@@ -49,7 +51,6 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       queue.reduce((acc, val) => (
         [...acc, {
           ...val,
-          index: currentIndex++,
           temp: false,
         }]
       ), [] as Array<card>)
@@ -62,14 +63,15 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       {
         type,
         parent,
-        index: queue.length,
+        index: queueId,
         temp: temp === undefined ? false : true
       }
     ]))
-  }, [])
+    setQueueId(queueId + 1)
+  }, [queueId])
 
   const updateQueue = React.useCallback((index: number, payload: card) => {
-    setQueue(queue => (queue.map(x => x.index === index ? x : {
+    setQueue(queue => (queue.map(x => x.index !== index ? x : {
       ...x,
       ...payload
     })))
@@ -83,14 +85,31 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     reSortSetQueue(queue.filter(val => val.index < index))
   }, [reSortSetQueue, queue])
 
+  const getQueueDeps = React.useCallback((index) => {
+    let deps = 0;
+
+    (function find(index, queue) {
+      if (index === undefined || index === -1) return deps;
+      deps += 1;
+
+      const findQueue = _.find(queue, ['index', index])
+      if (findQueue) {
+        find(findQueue.parent, queue)
+      }
+    })(index, queue)
+
+    return deps;
+  }, [queue])
+
   const replaceQueue = React.useCallback((draggingIndex:number, droppingIndex:number) => {
     const putIndex = _.findIndex(queue, ['index', droppingIndex])
     const movingQueue = queue
-      .filter(x => x.index >= draggingIndex)
+      .filter(x => x.index === draggingIndex)
+
 
     let changeQueue = queue.reduce((acc, val, index) => {
       if (putIndex === index) acc = [...acc, ...movingQueue]
-      if (val.index >= draggingIndex) return acc;
+      if (val.index === draggingIndex) return acc;
 
       return [...acc, val]
     }, [] as Array<card>)
@@ -148,6 +167,8 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       deleteNextQueue,
       replaceQueue,
       reSortSetQueue,
+
+      getQueueDeps,
 
       setBluetoothDevice,
 

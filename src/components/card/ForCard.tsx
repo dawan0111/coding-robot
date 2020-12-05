@@ -7,39 +7,32 @@ import { card, cardSortEvent, draggableCard } from '../../types/card'
 import { SortCardList } from './CardList'
 
 const ForWrapper = styled.div`
+  position: relative;
   width: auto;
   display: flex;
-  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
 `
 
 const ForStack = styled.div`
   position: relative;
+  z-index: 1000;
   min-width: 2rem;
   height: 100%;
-
   border-top: .25rem solid #ce81fe; 
-`
-
-const ForStart = styled.div`
-  width: 0.6rem;
-`
-
-const ForEnd = styled.div`
-  position: relative;
-  width: 1.95rem;
 `
 
 const ForRangeInput = styled.input`
   position: absolute;
-  left: 59%;
+  z-index: 101;
+  right: .45rem;
   bottom: 5%;
 
-  width: 60%;
+  width: 1.2rem;
   height: .5rem;
   background: #fff;
   border: none;
   border-radius: 300px;
-  transform: translateX(-50%);
   text-align: center;
   font-size: 0.25rem;
 
@@ -50,23 +43,22 @@ const ForRangeInput = styled.input`
 
 type Props = {
   cardIndex?: number
+  temp: boolean
 }
 
-export default function ForCard({ cardIndex }: Props) {
+export default function ForCard({ cardIndex, temp }: Props) {
   return (
     <ForWrapper>
-      <ForStart>
-        <img src={forStartImg} alt="for문 시작"/>
-      </ForStart>
+      <img src={forStartImg} alt="for문 시작"/>
       <ForStack>
-        <SortCardList
-          parent={cardIndex}
-        />
+        {(cardIndex !== -1 || !temp) && (
+          <SortCardList
+            parent={cardIndex}
+          />
+        )}
       </ForStack>
-      <ForEnd>
-        <img src={forEndImg} alt="for문 끝"/>
-        <ForRangeInput />
-      </ForEnd>
+      <img src={forEndImg} alt="for문 끝"/>
+      <ForRangeInput defaultValue="1" id={`${cardIndex}-for`} />
     </ForWrapper>
   )
 }

@@ -7,7 +7,7 @@ import CardList from '../card/CardList'
 const layerStyles: React.CSSProperties = {
   position: 'fixed',
   pointerEvents: 'none',
-  zIndex: 100,
+  zIndex: 1001,
   left: 0,
   top: 0,
   width: '100%',
@@ -61,8 +61,7 @@ export const CustomDragLayer: React.FC<CustomDragLayerProps> = (props) => {
       case "card":
         return <Card cardIndex={-1} type={item.data.type} />
       case "sortCard":
-        console.log(queue, draggingIndex)
-        return <CardList cards={queue.filter(x => x.index >= draggingIndex)} />
+        return <Card cardIndex={item.index} type={item.data.type} />
       default:
         return null
     }
