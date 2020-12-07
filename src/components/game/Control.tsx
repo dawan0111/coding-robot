@@ -3,11 +3,12 @@ import styled from 'styled-components'
 
 import { useDrop } from 'react-dnd'
 
-import { card, cardType, draggableCard } from "../../types/card";
+import { cardType, draggableCard } from "../../types/card";
 
 import DraggableCard from "../card/DraggableCard";
 import QueueControl from "./QueueControl";
 import GameContext from "../../contexts/GameContext";
+import AudioPlayerContext from "../../contexts/AudioContext";
 
 const Wrapper = styled.div`
   position: relative;
@@ -43,9 +44,12 @@ const usingCards: Array<cardType> = ["go", "left-rotate", "right-rotate", "for"]
 
 export default function Control() {
   const { deleteQueue } = React.useContext(GameContext)
+  const { play } = React.useContext(AudioPlayerContext)
+  
   const [, drop] = useDrop({
     accept: "sortCard",
     drop(item: draggableCard) {
+      play("drop")
       deleteQueue(item.index);
       return undefined
     },

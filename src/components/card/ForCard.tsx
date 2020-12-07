@@ -34,7 +34,7 @@ const ForRangeInput = styled.input`
   border: none;
   border-radius: 300px;
   text-align: center;
-  font-size: 0.25rem;
+  font-size: 0.5rem;
 
   &:focus {
     outline: none;
@@ -47,18 +47,19 @@ type Props = {
 }
 
 export default function ForCard({ cardIndex, temp }: Props) {
+
   return (
     <ForWrapper>
       <img src={forStartImg} alt="for문 시작"/>
       <ForStack>
-        {(cardIndex !== -1 || !temp) && (
+        {(cardIndex !== -1 && !temp) && (
           <SortCardList
             parent={cardIndex}
           />
         )}
       </ForStack>
       <img src={forEndImg} alt="for문 끝"/>
-      <ForRangeInput defaultValue="1" id={`${cardIndex}-for`} />
+      <ForRangeInput defaultValue="2" id={`for-${cardIndex}`} />
     </ForWrapper>
   )
 }

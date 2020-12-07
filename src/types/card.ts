@@ -16,11 +16,14 @@ export type cardC = {
 
 export type sortCardC = {
   index: number
+  parent?: number
 } & cardC
 
 export type draggableCard = {
   type: 'card' | 'sortCard'
   index: number
+  aIndex?: number
+  nowIndex?: number
   sort?: boolean
   data: {
     type: cardType

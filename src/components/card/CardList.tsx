@@ -43,13 +43,11 @@ export function SortCardList({ parent }: Props) {
   const { play } = React.useContext(AudioPlayerContext)
   const deps = getQueueDeps(parent)
 
-  console.log(deps)
-
   const [{ hovered, item, isOverCurrent }, drop] = useDrop({
     accept: "card",
 
     hover() {
-      if (isOverCurrent && tempQueue) {
+      if (isOverCurrent && tempQueue && parent !== tempQueue.parent) {
         updateQueue(tempQueue.index, {
           ...tempQueue,
           parent
@@ -97,6 +95,7 @@ export function SortCardList({ parent }: Props) {
           {
             !val.temp ? (
               <SortableCard
+                parent={val.parent}
                 type={val.type}
                 cardIndex={val.index}
                 index={k}
@@ -106,7 +105,7 @@ export function SortCardList({ parent }: Props) {
               <Card
                 cardIndex={val.index}
                 type={val.type}
-                temp={false}
+                temp={val.temp}
               />
             )
           }

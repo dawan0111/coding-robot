@@ -5,7 +5,7 @@ import { card, cardType } from '../types/card'
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 const windowNavigator: any = navigator
 
-type pageT = 'mapEdit' | 'game'
+type pageT = 'mapEdit' | 'game' | 'gameStart'
 
 interface valueT {
   page: pageT
@@ -21,10 +21,11 @@ interface valueT {
   updateQueue: (index: number, payload: card) => void
   deleteQueue: (index: number) => void
   deleteNextQueue: (index: number) => void
-  replaceQueue: (index1: number, index2: number) => void
+  replaceQueue: (index1: number, index2: number, isRight: boolean) => void
   reSortSetQueue: (queue: Array<card>) => void
 
   setBluetoothDevice: () => void
+  sendQueueData: () => void
 
   changeDraggingIndex: (index: number) => void
 }
@@ -34,7 +35,7 @@ const GameContext = React.createContext({} as valueT)
 export default GameContext
 
 export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
-  const [page, setPage] = React.useState<pageT>("mapEdit")
+  const [page, setPage] = React.useState<pageT>("gameStart")
   const [queue, setQueue] = React.useState<Array<card>>([])
   const [queueId, setQueueId] = React.useState(1)
   const [bluetoothConnect, setBluetoothConnect] = React.useState(false)
@@ -45,7 +46,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   ), [queue])
 
   const reSortSetQueue = React.useCallback((queue: Array<card>) => {
-    let currentIndex = 0;
+    console.log("aa")
 
     setQueue(
       queue.reduce((acc, val) => (
@@ -101,22 +102,20 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     return deps;
   }, [queue])
 
-  const replaceQueue = React.useCallback((draggingIndex:number, droppingIndex:number) => {
-    const putIndex = _.findIndex(queue, ['index', droppingIndex])
-    const movingQueue = queue
-      .filter(x => x.index === draggingIndex)
+  const replaceQueue = React.useCallback((draggingIndex:number, droppingIndex:number, isRight: boolean) => {
+    console.log(queue, draggingIndex, droppingIndex)
+    const movingQueue = queue[draggingIndex];
+    const changeParent = queue[droppingIndex].parent;
+    const changeQueue = queue.filter((x, index) => index !== draggingIndex)
 
-
-    let changeQueue = queue.reduce((acc, val, index) => {
-      if (putIndex === index) acc = [...acc, ...movingQueue]
-      if (val.index === draggingIndex) return acc;
-
-      return [...acc, val]
-    }, [] as Array<card>)
-
-    if (putIndex === -1) changeQueue = [...changeQueue, ...movingQueue]
-
-    setQueue(changeQueue)
+    setQueue([
+      ...changeQueue.slice(0, droppingIndex),
+      {
+        ...movingQueue,
+        parent: changeParent
+      },
+      ...changeQueue.slice(droppingIndex)
+    ])
   }, [queue])
 
   const setBluetoothDevice = React.useCallback(() => {
@@ -143,12 +142,44 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       });
   }, [])
 
+  const sendQueueData = React.useCallback(() => {
+    const hasingType: Record<cardType, number> = {
+      "go": 1,
+      "left-rotate": 2,
+      "right-rotate": 3,
+      "temp": -1,
+      "for": -1,
+      "start": -1
+    }
+    let flatArray: any = [];
+
+    (function find(queueP: Array<card>, index: number) {
+
+      if (queueP.length <= index) return;
+      if (queueP[index].type === "for") {
+        const loopCount = document.getElementById(`for-${queueP[index].index}`) as HTMLInputElement;
+        const childrens = queue.filter(x => x.parent === queueP[index].index)
+
+        if (loopCount) {
+          console.log(loopCount.value, childrens)
+          Array(Number(loopCount.value)).fill(0).forEach(() => find(childrens, 0))
+        }
+      } else {
+        flatArray.push(hasingType[queueP[index].type]);
+      }
+
+      find(queueP, index + 1)
+    })(queue.filter(x => x.parent === undefined), 0)
+
+    var data = new Uint8Array([flatArray.length, ...flatArray]);
+    console.log(data)
+  }, [queue])
+
   const changeDraggingIndex = React.useCallback((index: number) => {
     setDraggingIndex(index)
   }, [])
 
   React.useEffect(() => {
-    console.log(queue)
   }, [queue])
 
   return (
@@ -171,6 +202,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       getQueueDeps,
 
       setBluetoothDevice,
+      sendQueueData,
 
       changeDraggingIndex
     }}>

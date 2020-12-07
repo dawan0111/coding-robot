@@ -5,24 +5,65 @@ import { useDrag, DragSourceMonitor, XYCoord, useDrop } from 'react-dnd'
 import Card from './Card'
 import { draggableCard, sortCardC } from '../../types/card'
 import GameContext from '../../contexts/GameContext'
+import _ from 'lodash'
 
 
 export default function SortableCard({
-  type, index, cardIndex
+  type, index, cardIndex, temp, parent
 }: sortCardC) {
   const {
+    queue,
+    tempQueue,
+
     changeDraggingIndex,
+    replaceQueue,
+
+    draggingIndex
+
   } = React.useContext(GameContext)
   const ref = React.useRef<HTMLDivElement>(null);
+  const [{ isOverCurrent }, drop] = useDrop({
+    accept: ["sortCard", "card"],
+    hover(item: draggableCard, monitor) {
+      if (!isOverCurrent || !ref.current) return;
+
+      const hoverCard = queue.filter(x => x.parent === parent)[index]
+      const hoverIndex = hoverCard ? _.findIndex(queue, ["index", hoverCard.index]) : index;
+
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const clientOffset = monitor.getClientOffset();
+      const hoverWidth = hoverBoundingRect.right - hoverBoundingRect.left 
+      const hoverClientX = (clientOffset as XYCoord).x - hoverBoundingRect.left;
+
+      if (item.type === "card") {
+        if (!tempQueue) {
+          return;
+        }
+        const tempQueueIndex = item.index === undefined ? _.findIndex(queue, ["index", tempQueue.index]) : item.index
+
+        if (hoverWidth / 2 >= hoverClientX) {
+          replaceQueue(tempQueueIndex, hoverIndex, false)
+        } else {
+          replaceQueue(tempQueueIndex, hoverIndex, true)
+        }
+      }
+    },
+    collect: (monitor) => ({
+      hovered: monitor.isOver(),
+      isOverCurrent: monitor.isOver({ shallow: true }),
+      item: monitor.getItem(),
+    })
+  })
+
   const [{ isDragging }, drag] = useDrag({
     item: {
       type: "sortCard",
+      aIndex: index,
       index: cardIndex,
       sort: true,
       data: { type }
     },
     begin: (monitor: DragSourceMonitor) => {
-      if (cardIndex) changeDraggingIndex(cardIndex)
     },
     end: () => {
       changeDraggingIndex(Infinity)
@@ -32,9 +73,9 @@ export default function SortableCard({
     }),
   })
 
-  drag(ref);
+  drop(drag(ref));
 
-  const opacity = isDragging ? 0.5 : 1;
+  const opacity = draggingIndex === cardIndex ? 0.5 : 1;
 
   return (
     <div style={{ opacity, height: '100%', position: 'relative' }}>
@@ -49,6 +90,7 @@ export default function SortableCard({
       <Card
         cardIndex={cardIndex}
         type={type}
+        temp={temp}
       />
     </div>
   )

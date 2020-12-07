@@ -10,6 +10,7 @@ import BluetoothButton from "./game/BluetoothButton";
 import Control from "./game/Control";
 import { CustomDragLayer } from "./game/CustomDragLayer";
 import AudioPlayerContext from "../contexts/AudioContext";
+import PlayButton from "./game/PlayButton";
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,8 +19,6 @@ const Wrapper = styled.div`
 
   width: 100%;
   height: 100%;
-
-  background: #99eadf;
 `
 
 const MapWrapper = styled.div`
@@ -40,6 +39,36 @@ const StatusBar = styled.div`
   right: 1rem;
   top: 1rem;
 `
+
+const StartWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+`
+
+function GameStart() {
+  const { page, changePage } = React.useContext(GameContext)
+  const { play } = React.useContext(AudioPlayerContext)
+
+  return (
+    <>
+      {
+        page === "gameStart" &&
+        <StartWrapper>
+          <PlayButton onClick={() => {
+            changePage("game")
+            play("bgm", {
+              loop: true
+            })
+          }} />
+        </StartWrapper>
+      }
+    </>
+  )
+}
+
 
 function GamePlay() {
   const { page } = React.useContext(GameContext)
@@ -87,20 +116,13 @@ function MapEdit() {
 }
 
 export default function Game() {
-  const { play } = React.useContext(AudioPlayerContext)
-
-  React.useEffect(() => {
-    play("bgm", {
-      loop: true
-    })
-  }, [])
-
   return (
     <GameContextProvider>
       <DndProvider backend={TouchBackend}>
         <CustomDragLayer snapToGrid={false} />
         <GamePlay />
         <MapEdit />
+        <GameStart />
       </DndProvider>
     </GameContextProvider>
   )
