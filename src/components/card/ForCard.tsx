@@ -17,7 +17,7 @@ const ForWrapper = styled.div`
 const ForStack = styled.div`
   position: relative;
   z-index: 1000;
-  min-width: 2rem;
+  min-width: 2.45rem;
   height: 100%;
   border-top: .25rem solid #ce81fe; 
 `
@@ -51,7 +51,7 @@ export default function ForCard({ cardIndex, temp }: Props) {
   return (
     <ForWrapper>
       <img src={forStartImg} alt="for문 시작"/>
-      <ForStack>
+      <ForStack className="forStack">
         {(cardIndex !== -1 && !temp) && (
           <SortCardList
             parent={cardIndex}

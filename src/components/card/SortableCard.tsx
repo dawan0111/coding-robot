@@ -32,6 +32,7 @@ export default function SortableCard({
 
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       const clientOffset = monitor.getClientOffset();
+      
       const hoverWidth = hoverBoundingRect.right - hoverBoundingRect.left 
       const hoverClientX = (clientOffset as XYCoord).x - hoverBoundingRect.left;
 
@@ -64,6 +65,7 @@ export default function SortableCard({
       data: { type }
     },
     begin: (monitor: DragSourceMonitor) => {
+      if (cardIndex) changeDraggingIndex(cardIndex)
     },
     end: () => {
       changeDraggingIndex(Infinity)

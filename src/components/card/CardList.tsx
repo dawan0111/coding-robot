@@ -21,6 +21,10 @@ const Wrapper = styled.div<{ deps: number }>`
   & .item {
     height: ${props => `${2.45 - props.deps * 0.25}rem`}
   }
+
+  & .forStack {
+    min-width: ${props => `${2.45 - (props.deps + 1) * 0.25}rem`};
+  }
 `
 
 type Props = {
@@ -47,7 +51,7 @@ export function SortCardList({ parent }: Props) {
     accept: "card",
 
     hover() {
-      if (isOverCurrent && tempQueue && parent !== tempQueue.parent) {
+      if (tempQueue && parent !== tempQueue.parent) {
         updateQueue(tempQueue.index, {
           ...tempQueue,
           parent

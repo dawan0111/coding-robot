@@ -11,8 +11,11 @@ import Control from "./game/Control";
 import { CustomDragLayer } from "./game/CustomDragLayer";
 import AudioPlayerContext from "../contexts/AudioContext";
 import PlayButton from "./game/PlayButton";
+import MapEditComponent from './game/MapEdit'
+import MapEditControl from "./game/MapEditControl";
 
 const Wrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -48,6 +51,51 @@ const StartWrapper = styled.div`
   height: 100%;
 `
 
+const MapScreen = styled.div`
+  position: relative;
+  width: 70vh;
+  height: 56vh;
+
+  background: #999;
+  border: .5rem solid #fff;
+
+  & > img {
+    width: auto;
+    height: 100%;
+  }
+`
+
+const SettingButton = styled.button`
+  position: absolute;
+  right: -1rem;
+  top: -1rem;
+
+  width: 2rem;
+  height: 2rem;
+  border-radius: .5rem;
+  background: #f6941b;
+  border: none;
+
+  color: #fff;
+
+  span {
+    font-size: 1rem;
+  }
+`
+
+const BackButton = styled.button`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+
+  background: none;
+  border: none;
+
+  span {
+    font-size: 2rem;
+  }
+`
+
 function GameStart() {
   const { page, changePage } = React.useContext(GameContext)
   const { play } = React.useContext(AudioPlayerContext)
@@ -71,7 +119,7 @@ function GameStart() {
 
 
 function GamePlay() {
-  const { page } = React.useContext(GameContext)
+  const { page, changePage } = React.useContext(GameContext)
   return (
     <>
       {
@@ -81,7 +129,12 @@ function GamePlay() {
             <StatusBar>
               <BluetoothButton />
             </StatusBar>
-            <Map />
+            <MapScreen>
+              <SettingButton onClick={() => changePage("mapEdit")}>
+                <span className="material-icons">settings</span>
+              </SettingButton>
+              <Map />
+            </MapScreen>
           </MapWrapper>
           <ControlWrapper>
             <Control />
@@ -93,22 +146,16 @@ function GamePlay() {
 }
 
 function MapEdit() {
-  const { page } = React.useContext(GameContext)
+  const { page, changePage } = React.useContext(GameContext)
 
   return (
     <>
       {
         page === "mapEdit" &&
         <Wrapper>
-          <MapWrapper>
-            <StatusBar>
-              <BluetoothButton />
-            </StatusBar>
-            <Map />
-          </MapWrapper>
-          <ControlWrapper>
-            <Control />
-          </ControlWrapper>
+          <BackButton onClick={() => changePage("game")}><span className="material-icons">keyboard_backspace</span></BackButton>
+          <MapEditComponent />
+          <MapEditControl />
         </Wrapper>
       }
     </>
