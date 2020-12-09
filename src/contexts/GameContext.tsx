@@ -65,14 +65,29 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   ), [map])
 
   React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setPlayArray(playArray => playArray.slice(1))
-    }, 500)
+    const handleChanged = (e: any) => {
+      const value = e.target.value.getUint8(0).toString(10);
 
-    return () => {
-      clearTimeout(timer)
+      if (value === "1") {
+        setPlayArray(playArray => playArray.slice(1))
+      } else {
+        console.log(value);
+      } 
     }
-  }, [playArray])
+
+    if (device) {
+      return device.startNotifications().then(() => {
+        console.log('> Notifications started');
+        device.addEventListener('characteristicvaluechanged', handleChanged);
+      });
+    }
+    
+    return (() => {
+      if (device) {
+        device.removeEventListener('characteristicvaluechanged', handleChanged);
+      }
+    })
+  }, [device])
 
   const reSortSetQueue = React.useCallback((queue: Array<card>) => {
     setQueue(
@@ -152,7 +167,9 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       .then(function(device: any) {
         device.addEventListener('gattserverdisconnected', () => {
           alert("디바이스 연결이 끊어졌습니다.");
+
           setDevice(null)
+          setBluetoothConnect(false)
         });
         return device.gatt.connect();
       })
@@ -206,7 +223,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       return;
     }
 
-    var data = new Uint8Array([flatArray.length, ...flatArray]);
+    var data = new Uint8Array([0x04, ...flatArray, 0x04]);
 
     if (device !== null) {
       device.writeValue(data)
