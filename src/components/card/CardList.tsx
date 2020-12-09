@@ -88,12 +88,9 @@ export function SortCardList({ parent }: Props) {
 
   const queues = queue.filter(x => x.parent === parent);
 
-  const renderQueues = queues.length ? queues : [
-  ]
-
   return (
     <Wrapper deps={deps} ref={drop}>
-      {renderQueues.map((val, k) => (
+      {queues.map((val, k) => (
         <div
           key={val.index}
           style={{

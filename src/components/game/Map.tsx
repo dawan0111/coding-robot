@@ -11,7 +11,7 @@ const MapGrid = styled.div`
   width: 100%;
   height: 100%;
 
-  div {
+  & > div {
     width: 20%;
     height: 25%;
     background: #00c55a;
@@ -32,7 +32,7 @@ const MapGridItem = styled.div<{ active: boolean }>`
   `)}
   // border: ${props => props.active ? "2px solid #ff9000" : "none"}
 
-  & > img {
+  .mapIcon {
     width: auto;
     height: 40%;
   }

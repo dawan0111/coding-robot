@@ -14,6 +14,7 @@ export default function SortableCard({
 }: sortCardC) {
   const {
     queue,
+    playArray,
     tempQueue,
 
     changeDraggingIndex,
@@ -55,17 +56,6 @@ export default function SortableCard({
         } else {
           replaceQueue(tempQueueIndex, hoverIndex, false, false)
         }
-
-        /*
-        if (hoverClientX <= hoverWidth * 0.3 || hoverClientX >= hoverWidth * 0.7) {
-
-        } else {
-          if (tempQueue.parent !== cardIndex) {
-            console.log("center")
-            replaceQueue(tempQueueIndex, hoverIndex, type === "for", true)
-          }
-        }
-        */
       }
     },
 
@@ -118,6 +108,7 @@ export default function SortableCard({
         height: '100%'
       }}></div>
       <Card
+        active={playArray[0] === cardIndex}
         cardIndex={cardIndex}
         type={type}
         temp={temp}

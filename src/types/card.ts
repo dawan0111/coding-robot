@@ -9,6 +9,7 @@ export type card = {
 }
 export type cardC = {
   type: cardType
+  active?: boolean
   temp?: boolean
   cardIndex?: number
   func?: any

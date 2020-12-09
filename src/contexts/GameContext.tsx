@@ -1,7 +1,7 @@
 import _, { drop } from 'lodash'
 import React from 'react'
 import { card, cardType } from '../types/card'
-import { coinT } from '../types/coin'
+import { coinT, isStartCoin } from '../types/coin'
 
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 const windowNavigator: any = navigator
@@ -13,6 +13,7 @@ interface valueT {
   map: Array<coinT>
   mapStartIndex: number
   queue: Array<card>
+  playArray: Array<number>
   tempQueue: card | undefined
   bluetoothConnect: boolean
   draggingIndex: number
@@ -53,13 +54,25 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   const [device, setDevice] = React.useState<any>(null)
   const [draggingIndex, setDraggingIndex] = React.useState(Infinity)
 
+  const [playArray, setPlayArray] = React.useState([])
+
   const tempQueue = React.useMemo(() => (
     queue.find(x => x.temp === true)
   ), [queue])
 
   const mapStartIndex = React.useMemo(() => (
-    map.findIndex(x => x === "start")
+    map.findIndex(isStartCoin)
   ), [map])
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setPlayArray(playArray => playArray.slice(1))
+    }, 500)
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [playArray])
 
   const reSortSetQueue = React.useCallback((queue: Array<card>) => {
     setQueue(
@@ -137,6 +150,10 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       filters: [{ services: [0xFFE0] }]
     })
       .then(function(device: any) {
+        device.addEventListener('gattserverdisconnected', () => {
+          alert("디바이스 연결이 끊어졌습니다.");
+          setDevice(null)
+        });
         return device.gatt.connect();
       })
       .then(function(server: any) {
@@ -148,9 +165,6 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       .then(function(characteristic: any) {
         setBluetoothConnect(true)
         setDevice(characteristic)
-        
-        var data = new Uint8Array([0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44, 0xbb, 0x25, 0x05, 0x44]);
-        return characteristic.writeValue(data);
       })
       .catch(function(error: any) {
         console.error('Connection failed!', error);
@@ -167,6 +181,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       "start": -1
     }
     let flatArray: any = [];
+    let cardFlatArray: any = [];
 
     (function find(queueP: Array<card>, index: number) {
 
@@ -180,16 +195,24 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
         }
       } else {
         flatArray.push(hasingType[queueP[index].type]);
+        cardFlatArray.push(queueP[index].index)
       }
 
       find(queueP, index + 1)
     })(queue.filter(x => x.parent === undefined), 0)
+
+    if (flatArray.length > 90) {
+      alert("실행 횟수가 너무 길어요!");
+      return;
+    }
 
     var data = new Uint8Array([flatArray.length, ...flatArray]);
 
     if (device !== null) {
       device.writeValue(data)
     }
+
+    setPlayArray(cardFlatArray)
   }, [queue, device])
 
   const changeDraggingIndex = React.useCallback((index: number) => {
@@ -218,6 +241,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       map,
       mapStartIndex,
       queue,
+      playArray,
       tempQueue,
       bluetoothConnect,
       draggingIndex,

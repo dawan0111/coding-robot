@@ -8,10 +8,15 @@ import goImg from '../../images/go.png'
 import { cardC } from "../../types/card";
 import ForCard from "./ForCard";
 
-const Item = styled.div`
+const Item = styled.div<{ active: boolean }>`
   position: relative;
   height: 2.45rem;
   font-size: 0;
+
+  ${props => props.active && `
+    z-index: 1000;
+    box-shadow: 0 0 5px 2px #fff;
+  `}
 
   > div {
     height: 100%;
@@ -27,14 +32,20 @@ const Item = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    overflow: hidden;
     width: auto;
   }
 `
 
-export default React.forwardRef(function Card({ type, func, cardIndex, temp = false, ...props }: cardC, ref) {
+export default React.forwardRef(function Card({
+  type,
+  cardIndex,
+  active = false,
+  temp = false,
+  ...props 
+}: cardC, ref) {
+
   return (
-    <Item {...props} className={`${type} item`}>
+    <Item {...props} active={active} className={`${type} item`}>
       {type === "start" && <img src={startImg} alt="시작 이미지" />}
       {type === "go" && <img src={goImg} alt="직진"/>}
       {type === "left-rotate" && <img src={leftRotateImg} alt="왼쪽으로 90도 회전"/>}

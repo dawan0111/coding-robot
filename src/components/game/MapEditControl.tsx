@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import GameContext from '../../contexts/GameContext'
-import { coinT } from '../../types/coin'
+import { coins, coinT, isStartCoin } from '../../types/coin'
 import MapIcon from './MapIcon'
 
 const MapEditWrapper = styled.div`
@@ -30,16 +30,21 @@ const EditButton = styled.button`
   }
 `
 
-const mapIcons: Array<coinT> = ["carrot", "start", "empty"]
-
 export default function MapEdit() {
   const { activeMap, updateMap, mapStartIndex } = React.useContext(GameContext)
 
   return (
     <MapEditWrapper>
-      {mapIcons.map((type, index) => (
+      {coins.filter((type) => (
+        (type === "start-left" && activeMap % 5 !== 0) ||
+        (type === "start-right" && activeMap % 5 !== 4) ||
+        (type === "start-up" && activeMap > 4) ||
+        (type === "start-down" && activeMap < 15) ||
+        !isStartCoin(type) ||
+        activeMap === -1
+      )).map((type, index) => (
         <EditButton key={index} onClick={() => {
-          if (type === "start" && mapStartIndex !== -1) {
+          if (isStartCoin(type) && mapStartIndex !== -1) {
             updateMap(mapStartIndex, "empty")  
           }
           activeMap !== -1 && updateMap(activeMap, type)
