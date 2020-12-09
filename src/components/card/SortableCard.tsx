@@ -6,6 +6,7 @@ import Card from './Card'
 import { draggableCard, sortCardC } from '../../types/card'
 import GameContext from '../../contexts/GameContext'
 import _ from 'lodash'
+import AudioPlayerContext from '../../contexts/AudioContext'
 
 
 export default function SortableCard({
@@ -17,10 +18,13 @@ export default function SortableCard({
 
     changeDraggingIndex,
     replaceQueue,
+    reSortSetQueue,
 
     draggingIndex
 
   } = React.useContext(GameContext)
+  const { play } = React.useContext(AudioPlayerContext)
+  
   const ref = React.useRef<HTMLDivElement>(null);
   const [{ isOverCurrent }, drop] = useDrop({
     accept: ["sortCard", "card"],
@@ -28,7 +32,7 @@ export default function SortableCard({
       if (!isOverCurrent || !ref.current) return;
 
       const hoverCard = queue.filter(x => x.parent === parent)[index]
-      const hoverIndex = hoverCard ? _.findIndex(queue, ["index", hoverCard.index]) : index;
+      let hoverIndex = hoverCard ? _.findIndex(queue, ["index", hoverCard.index]) : index;
 
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       const clientOffset = monitor.getClientOffset();
@@ -42,13 +46,37 @@ export default function SortableCard({
         }
         const tempQueueIndex = item.index === undefined ? _.findIndex(queue, ["index", tempQueue.index]) : item.index
 
-        if (hoverWidth / 2 >= hoverClientX) {
-          replaceQueue(tempQueueIndex, hoverIndex, false)
-        } else {
-          replaceQueue(tempQueueIndex, hoverIndex, true)
+        if (type === "temp") {
+          hoverIndex = tempQueueIndex
         }
+
+        if (hoverClientX >= hoverWidth * 0.5) {
+          replaceQueue(tempQueueIndex, hoverIndex, false, true)
+        } else {
+          replaceQueue(tempQueueIndex, hoverIndex, false, false)
+        }
+
+        /*
+        if (hoverClientX <= hoverWidth * 0.3 || hoverClientX >= hoverWidth * 0.7) {
+
+        } else {
+          if (tempQueue.parent !== cardIndex) {
+            console.log("center")
+            replaceQueue(tempQueueIndex, hoverIndex, type === "for", true)
+          }
+        }
+        */
       }
     },
+
+    drop(item: draggableCard, monitor) {
+      if (monitor.didDrop()) return;
+
+      play('drop')
+      reSortSetQueue(queue)
+      return undefined
+    },
+
     collect: (monitor) => ({
       hovered: monitor.isOver(),
       isOverCurrent: monitor.isOver({ shallow: true }),

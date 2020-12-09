@@ -1,3 +1,4 @@
+import { render } from '@testing-library/react'
 import { update } from 'lodash'
 import React from 'react'
 import { useDrop } from 'react-dnd'
@@ -51,7 +52,8 @@ export function SortCardList({ parent }: Props) {
     accept: "card",
 
     hover() {
-      if (tempQueue && parent !== tempQueue.parent) {
+      if (isOverCurrent && tempQueue && parent !== tempQueue.parent) {
+        console.log("hover!!")
         updateQueue(tempQueue.index, {
           ...tempQueue,
           parent
@@ -84,11 +86,14 @@ export function SortCardList({ parent }: Props) {
     }
   }, [hovered])
 
+  const queues = queue.filter(x => x.parent === parent);
+
+  const renderQueues = queues.length ? queues : [
+  ]
+
   return (
     <Wrapper deps={deps} ref={drop}>
-      {[
-        ...queue.filter(x => x.parent === parent),
-      ].map((val, k) => (
+      {renderQueues.map((val, k) => (
         <div
           key={val.index}
           style={{

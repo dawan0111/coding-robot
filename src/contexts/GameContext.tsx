@@ -25,7 +25,7 @@ interface valueT {
   updateQueue: (index: number, payload: card) => void
   deleteQueue: (index: number) => void
   deleteNextQueue: (index: number) => void
-  replaceQueue: (index1: number, index2: number, isRight: boolean) => void
+  replaceQueue: (index1: number, index2: number, isFor: boolean, isRight: boolean) => void
   reSortSetQueue: (queue: Array<card>) => void
 
   putMap: (map: Array<coinT>) => void
@@ -43,7 +43,7 @@ const GameContext = React.createContext({} as valueT)
 export default GameContext
 
 export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
-  const [page, setPage] = React.useState<pageT>("mapEdit")
+  const [page, setPage] = React.useState<pageT>("game")
   const [queue, setQueue] = React.useState<Array<card>>([])
   const [map, setMap] = React.useState<Array<coinT>>(Array(20).fill("empty"))
   const [activeMap, setActiveMap] = React.useState<number>(-1)
@@ -116,17 +116,17 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     return deps;
   }, [queue])
 
-  const replaceQueue = React.useCallback((draggingIndex:number, droppingIndex:number, isRight: boolean) => {
+  const replaceQueue = React.useCallback((draggingIndex:number, droppingIndex:number, isFor: boolean, isRight: boolean) => {
     const movingQueue = queue[draggingIndex];
     const changeParent = queue[droppingIndex].parent;
     const changeQueue = queue.filter((x, index) => index !== draggingIndex)
-    const isFront = isRight ? 0 : 0;
+    const isFront = isRight ? 1 : 0;
 
     setQueue([
       ...changeQueue.slice(0, droppingIndex + isFront),
       {
         ...movingQueue,
-        parent: changeParent
+        parent: isFor ? queue[droppingIndex].index : changeParent
       },
       ...changeQueue.slice(droppingIndex + isFront)
     ])
