@@ -170,7 +170,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       ...middleQueue,
       ...changeQueue.slice(droppingIndex + isFront)
     ])
-  }, [queue, tempQueue])
+  }, [queue])
 
   const setBluetoothDevice = React.useCallback(() => {
     windowNavigator.bluetooth.requestDevice({

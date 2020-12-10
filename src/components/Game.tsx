@@ -1,7 +1,6 @@
 import React from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { TouchBackend } from "react-dnd-touch-backend";
+import { DndProvider } from 'react-dnd-multi-backend';
+import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch'; 
 import styled from 'styled-components'
 import GameContext, { GameContextProvider } from "../contexts/GameContext";
 import Map from './game/Map'
@@ -165,7 +164,7 @@ function MapEdit() {
 export default function Game() {
   return (
     <GameContextProvider>
-      <DndProvider backend={TouchBackend}>
+      <DndProvider options={HTML5toTouch}>
         <CustomDragLayer snapToGrid={false} />
         <GamePlay />
         <MapEdit />

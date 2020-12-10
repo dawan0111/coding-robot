@@ -44,12 +44,11 @@ export default function SortableCard({
 
       if (item.type === "card") {
         if (!tempQueue) return;
-
         const tempQueueIndex = _.findIndex(queue, ["index", tempQueue.index])
-        if (type === "temp") {
-          hoverIndex = tempQueueIndex
-        }
-        if (hoverClientX >= hoverWidth * 0.5) {
+        const isRight = hoverClientX >= hoverWidth * 0.5;
+        if (hoverIndex === tempQueueIndex || (isRight && hoverIndex + 1 === tempQueueIndex)) return;
+
+        if (isRight) {
           replaceQueue(tempQueueIndex, hoverIndex, false, true)
         } else {
           replaceQueue(tempQueueIndex, hoverIndex, false, false)
@@ -109,20 +108,12 @@ export default function SortableCard({
   drop(drag(ref));
 
   return (
-    <div style={{
+    <div ref={ref} style={{
       display: draggingIndex === cardIndex ? "none" : "block",
       opacity: 1,
       height: '100%',
       position: 'relative'
     }}>
-      <div ref={ref} style={{
-        position: 'absolute',
-        zIndex: 100,
-        left: 0,
-        top: 0,
-        width: "100%",
-        height: '100%'
-      }}></div>
       <Card
         active={playArray[0] === cardIndex}
         cardIndex={cardIndex}
