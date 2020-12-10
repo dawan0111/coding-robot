@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/coding-robot/static/css/main.4cbebd07.chunk.css",
-    "main.js": "/coding-robot/static/js/main.6b249271.chunk.js",
-    "main.js.map": "/coding-robot/static/js/main.6b249271.chunk.js.map",
+    "main.js": "/coding-robot/static/js/main.1dee3000.chunk.js",
+    "main.js.map": "/coding-robot/static/js/main.1dee3000.chunk.js.map",
     "runtime-main.js": "/coding-robot/static/js/runtime-main.67b616d5.js",
     "runtime-main.js.map": "/coding-robot/static/js/runtime-main.67b616d5.js.map",
-    "static/js/2.dcc8680c.chunk.js": "/coding-robot/static/js/2.dcc8680c.chunk.js",
-    "static/js/2.dcc8680c.chunk.js.map": "/coding-robot/static/js/2.dcc8680c.chunk.js.map",
+    "static/js/2.65525f5a.chunk.js": "/coding-robot/static/js/2.65525f5a.chunk.js",
+    "static/js/2.65525f5a.chunk.js.map": "/coding-robot/static/js/2.65525f5a.chunk.js.map",
     "static/js/3.fd965e59.chunk.js": "/coding-robot/static/js/3.fd965e59.chunk.js",
     "static/js/3.fd965e59.chunk.js.map": "/coding-robot/static/js/3.fd965e59.chunk.js.map",
     "index.html": "/coding-robot/index.html",
     "static/css/main.4cbebd07.chunk.css.map": "/coding-robot/static/css/main.4cbebd07.chunk.css.map",
-    "static/js/2.dcc8680c.chunk.js.LICENSE.txt": "/coding-robot/static/js/2.dcc8680c.chunk.js.LICENSE.txt",
+    "static/js/2.65525f5a.chunk.js.LICENSE.txt": "/coding-robot/static/js/2.65525f5a.chunk.js.LICENSE.txt",
     "static/media/bgm.wav": "/coding-robot/static/media/bgm.dd51a015.wav",
     "static/media/carrot.3531d5d4.svg": "/coding-robot/static/media/carrot.3531d5d4.svg",
     "static/media/drop.wav": "/coding-robot/static/media/drop.81a8bdc2.wav",
@@ -20,8 +20,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.67b616d5.js",
-    "static/js/2.dcc8680c.chunk.js",
+    "static/js/2.65525f5a.chunk.js",
     "static/css/main.4cbebd07.chunk.css",
-    "static/js/main.6b249271.chunk.js"
+    "static/js/main.1dee3000.chunk.js"
   ]
 }
