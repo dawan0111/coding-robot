@@ -1,4 +1,4 @@
-import _, { drop } from 'lodash'
+import _ from 'lodash'
 import React from 'react'
 import { card, cardType } from '../types/card'
 import { coinT, isStartCoin } from '../types/coin'
@@ -91,7 +91,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
 
   const reSortSetQueue = React.useCallback((queue: Array<card>) => {
     setQueue(
-      queue.reduce((acc, val) => (
+      queue.filter(val => val.index !== Infinity).reduce((acc, val) => (
         [...acc, {
           ...val,
           temp: false,
@@ -121,7 +121,16 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   }, [])
 
   const deleteQueue = React.useCallback((index: number) => {
-    reSortSetQueue(queue.filter(val => val.index !== index))
+    let changeQueue: Array<card> = [...queue];
+
+    (function del(index) {
+      changeQueue.filter(val => val.parent === index).forEach((val) => {
+        del(val.index)
+      })
+      changeQueue = changeQueue.filter(val => val.index !== index && val.parent !== index);
+    })(index)
+
+    reSortSetQueue(changeQueue);
   }, [reSortSetQueue, queue])
 
   const deleteNextQueue = React.useCallback((index: number) => {
@@ -147,18 +156,21 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   const replaceQueue = React.useCallback((draggingIndex:number, droppingIndex:number, isFor: boolean, isRight: boolean) => {
     const movingQueue = queue[draggingIndex];
     const changeParent = queue[droppingIndex].parent;
-    const changeQueue = queue.filter((x, index) => index !== draggingIndex)
+    const changeQueue = queue.filter((x, index) => index !== draggingIndex && x.index !== Infinity)
     const isFront = isRight ? 1 : 0;
+    let middleQueue: Array<card> = []
+
+    middleQueue = [{
+      ...movingQueue,
+      parent: changeParent,
+    }]
 
     setQueue([
       ...changeQueue.slice(0, droppingIndex + isFront),
-      {
-        ...movingQueue,
-        parent: isFor ? queue[droppingIndex].index : changeParent
-      },
+      ...middleQueue,
       ...changeQueue.slice(droppingIndex + isFront)
     ])
-  }, [queue])
+  }, [queue, tempQueue])
 
   const setBluetoothDevice = React.useCallback(() => {
     windowNavigator.bluetooth.requestDevice({
@@ -227,9 +239,8 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
 
     if (device !== null) {
       device.writeValue(data)
+      setPlayArray(cardFlatArray)
     }
-
-    setPlayArray(cardFlatArray)
   }, [queue, device])
 
   const changeDraggingIndex = React.useCallback((index: number) => {
@@ -249,6 +260,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   }, [])
 
   React.useEffect(() => {
+    console.log(queue)
   }, [queue])
 
   return (

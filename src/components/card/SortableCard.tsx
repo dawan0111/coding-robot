@@ -17,6 +17,8 @@ export default function SortableCard({
     playArray,
     tempQueue,
 
+    addQueue,
+    deleteQueue,
     changeDraggingIndex,
     replaceQueue,
     reSortSetQueue,
@@ -37,33 +39,44 @@ export default function SortableCard({
 
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       const clientOffset = monitor.getClientOffset();
-      
       const hoverWidth = hoverBoundingRect.right - hoverBoundingRect.left 
       const hoverClientX = (clientOffset as XYCoord).x - hoverBoundingRect.left;
 
       if (item.type === "card") {
-        if (!tempQueue) {
-          return;
-        }
-        const tempQueueIndex = item.index === undefined ? _.findIndex(queue, ["index", tempQueue.index]) : item.index
+        if (!tempQueue) return;
 
+        const tempQueueIndex = _.findIndex(queue, ["index", tempQueue.index])
         if (type === "temp") {
           hoverIndex = tempQueueIndex
         }
-
         if (hoverClientX >= hoverWidth * 0.5) {
           replaceQueue(tempQueueIndex, hoverIndex, false, true)
         } else {
           replaceQueue(tempQueueIndex, hoverIndex, false, false)
         }
+      } else {
+        if (!tempQueue) {
+          addQueue(item.data.type, parent, true);
+        }
+        item.type = "card"
       }
     },
 
     drop(item: draggableCard, monitor) {
-      if (monitor.didDrop()) return;
+      if (monitor.didDrop() || !ref.current) return;
+
+      reSortSetQueue(
+        queue
+          .map((val) => {
+            return val.parent === draggingIndex ? ({
+              ...val,
+              parent: tempQueue ? tempQueue.index : val.parent
+            }) : val
+          })
+          .filter((val) => val.index !== draggingIndex)
+      )
 
       play('drop')
-      reSortSetQueue(queue)
       return undefined
     },
 
@@ -95,10 +108,13 @@ export default function SortableCard({
 
   drop(drag(ref));
 
-  const opacity = draggingIndex === cardIndex ? 0.5 : 1;
-
   return (
-    <div style={{ opacity, height: '100%', position: 'relative' }}>
+    <div style={{
+      display: draggingIndex === cardIndex ? "none" : "block",
+      opacity: 1,
+      height: '100%',
+      position: 'relative'
+    }}>
       <div ref={ref} style={{
         position: 'absolute',
         zIndex: 100,

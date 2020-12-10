@@ -37,6 +37,7 @@ export function SortCardList({ parent }: Props) {
   const {
     queue,
     tempQueue,
+    draggingIndex,
 
     addQueue, 
     deleteQueue,
@@ -49,7 +50,7 @@ export function SortCardList({ parent }: Props) {
   const deps = getQueueDeps(parent)
 
   const [{ hovered, item, isOverCurrent }, drop] = useDrop({
-    accept: "card",
+    accept: ["card", "sortCard"],
 
     hover() {
       if (isOverCurrent && tempQueue && parent !== tempQueue.parent) {
@@ -65,7 +66,16 @@ export function SortCardList({ parent }: Props) {
       if (monitor.didDrop()) return;
 
       play('drop')
-      reSortSetQueue(queue)
+      reSortSetQueue(
+        queue
+          .map((val) => {
+            return val.parent === draggingIndex ? ({
+              ...val,
+              parent: tempQueue ? tempQueue.index : val.parent
+            }) : val
+          })
+          .filter((val) => val.index !== draggingIndex)
+      )
       return undefined
     },
 
