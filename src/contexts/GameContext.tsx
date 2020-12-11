@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import { card, cardType } from '../types/card'
 import { coinT, isStartCoin } from '../types/coin'
+import { rankingT } from '../types/ranking'
 
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 const windowNavigator: any = navigator
@@ -18,6 +19,11 @@ interface valueT {
   bluetoothConnect: boolean
   draggingIndex: number
   activeMap: number
+  score: number
+
+  resultVisible: boolean
+
+  ranking: Record<string, Array<rankingT>>
 
   changePage: (page: pageT) => void
 
@@ -31,30 +37,46 @@ interface valueT {
 
   putMap: (map: Array<coinT>) => void
   updateMap: (index: number, coin: coinT) => void
+  saveMap: () => void
 
   setBluetoothDevice: () => void
   sendQueueData: () => void
 
   changeDraggingIndex: (index: number) => void
   changeActiveMap: (index: number) => void
+
+  updateResultVisible: (bool: boolean) => void
+
+  addRanking: (name: string) => void
 }
 
 const GameContext = React.createContext({} as valueT)
 
 export default GameContext
 
-export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
-  const [page, setPage] = React.useState<pageT>("game")
-  const [queue, setQueue] = React.useState<Array<card>>([])
-  const [map, setMap] = React.useState<Array<coinT>>(Array(20).fill("empty"))
-  const [activeMap, setActiveMap] = React.useState<number>(-1)
+const defaultMap = Array(20).fill("empty");
+defaultMap[0] = "start-right";
 
+export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
+  const [page, setPage] = React.useState<pageT>("gameStart")
+  const [queue, setQueue] = React.useState<Array<card>>([])
+  const [map, setMap] = React.useState<Array<coinT>>(
+    localStorage.getItem("map") ? JSON.parse(localStorage.getItem("map") || "[]") : defaultMap
+  )
+  const [activeMap, setActiveMap] = React.useState<number>(-1)
+  const [resultVisible, setResultVisible] = React.useState(false)
+
+  const [ranking, setRanking] = React.useState(JSON.parse(localStorage.getItem("ranking") || "{}"))
   const [queueId, setQueueId] = React.useState(1)
   const [bluetoothConnect, setBluetoothConnect] = React.useState(false)
   const [device, setDevice] = React.useState<any>(null)
   const [draggingIndex, setDraggingIndex] = React.useState(Infinity)
 
   const [playArray, setPlayArray] = React.useState([])
+
+  const score = React.useMemo(() => (
+    9000 - queue.length * 100
+  ), [queue])
 
   const tempQueue = React.useMemo(() => (
     queue.find(x => x.temp === true)
@@ -63,31 +85,6 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   const mapStartIndex = React.useMemo(() => (
     map.findIndex(isStartCoin)
   ), [map])
-
-  React.useEffect(() => {
-    const handleChanged = (e: any) => {
-      const value = e.target.value.getUint8(0).toString(10);
-
-      if (value === "1") {
-        setPlayArray(playArray => playArray.slice(1))
-      } else {
-        console.log(value);
-      } 
-    }
-
-    if (device) {
-      return device.startNotifications().then(() => {
-        console.log('> Notifications started');
-        device.addEventListener('characteristicvaluechanged', handleChanged);
-      });
-    }
-    
-    return (() => {
-      if (device) {
-        device.removeEventListener('characteristicvaluechanged', handleChanged);
-      }
-    })
-  }, [device])
 
   const reSortSetQueue = React.useCallback((queue: Array<card>) => {
     setQueue(
@@ -201,6 +198,10 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   }, [])
 
   const sendQueueData = React.useCallback(() => {
+    if (mapStartIndex === -1) {
+      alert("맵에 시작부분을 설정해주세요!");
+      return;
+    }
     const hasingType: Record<cardType, number> = {
       "go": 0x01,
       "left-rotate": 0x02,
@@ -213,7 +214,6 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     let cardFlatArray: any = [];
 
     (function find(queueP: Array<card>, index: number) {
-
       if (queueP.length <= index) return;
       if (queueP[index].type === "for") {
         const loopCount = document.getElementById(`for-${queueP[index].index}`) as HTMLInputElement;
@@ -239,15 +239,16 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
 
     if (device !== null) {
       device.writeValue(data)
-      setPlayArray(cardFlatArray)
     }
-  }, [queue, device])
+
+    setPlayArray(cardFlatArray)
+  }, [queue, device, mapStartIndex])
 
   const changeDraggingIndex = React.useCallback((index: number) => {
     setDraggingIndex(index)
   }, [])
 
-  const putMap = React.useCallback((map) => {
+  const putMap = React.useCallback((map, save = true) => {
     setMap(map)
   }, [])
 
@@ -259,9 +260,140 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     ))
   }, [])
 
+  const saveMap = React.useCallback(() => {
+    localStorage.setItem("map", JSON.stringify(map));
+  }, [map])
+
+  const moveRabbit = React.useCallback((cardIndex: number) => {
+    const _map = [...map];
+    const direction = map[mapStartIndex];
+    const move = (index:number, moveIndex: number, value: coinT) => {
+      if (moveIndex < 0 || moveIndex > 19) return;
+
+      _map[index] = "empty";
+      _map[moveIndex] = value;
+    }
+
+    const action = _.find(queue, ["index", cardIndex])?.type;
+
+    if (!action) return;
+   
+    if (direction === "start-left") {
+      if (action === "go") {
+        if (mapStartIndex % 5 !== 0) {
+          move(mapStartIndex, mapStartIndex - 1, direction);
+        }
+      } else if (action === "left-rotate") {
+        move(mapStartIndex, mapStartIndex, "start-down");
+      } else if (action === "right-rotate") {
+        move(mapStartIndex, mapStartIndex, "start-up");
+      }
+    } else if (direction === "start-up") {
+      if (action === "go") {
+        move(mapStartIndex, mapStartIndex - 5, direction);
+      } else if (action === "left-rotate") {
+        move(mapStartIndex, mapStartIndex, "start-left");
+      } else if (action === "right-rotate") {
+        move(mapStartIndex, mapStartIndex, "start-right");
+      }
+    } else if (direction === "start-right") {
+      if (action === "go") {
+        if (mapStartIndex % 5 !== 4) {
+          move(mapStartIndex, mapStartIndex + 1, direction);
+        }
+      } else if (action === "left-rotate") {
+        move(mapStartIndex, mapStartIndex, "start-up");
+      } else if (action === "right-rotate") {
+        move(mapStartIndex, mapStartIndex, "start-down");
+      }
+    } else if (direction === "start-down") {
+      if (action === "go") {
+        move(mapStartIndex, mapStartIndex + 5, direction);
+      } else if (action === "left-rotate") {
+        move(mapStartIndex, mapStartIndex, "start-right");
+      } else if (action === "right-rotate") {
+        move(mapStartIndex, mapStartIndex, "start-left");
+      }
+    }
+
+    putMap(_map, false)
+  }, [queue, map, putMap, mapStartIndex])
+
+  const addRanking = React.useCallback((name) => {
+    const _ranking = {...ranking}
+    const hashKey = localStorage.getItem("map") || "";
+    if (_ranking[hashKey] === undefined) {
+      _ranking[hashKey] = [];
+    }
+
+    _ranking[hashKey].push({
+      name,
+      score: score
+    })
+
+    setRanking(_ranking)
+    localStorage.setItem("ranking", JSON.stringify(_ranking))
+  }, [ranking, map, score])
+
+  const updateResultVisible = React.useCallback((bool) => {
+    setResultVisible(bool)
+  }, [])
+
+  const gameEnd = () => {
+    updateResultVisible(true);
+  }
+
   React.useEffect(() => {
-    console.log(queue)
-  }, [queue])
+    if (!localStorage.getItem("map")) {
+      localStorage.setItem("map", JSON.stringify(defaultMap)) 
+    }
+  }, [])
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      if (playArray.length !== 0) {
+        setPlayArray(playArray => playArray.slice(1))
+      }
+      if (playArray.length === 1) {
+        gameEnd()
+      }
+    }, 500)
+
+    if (playArray.length) {
+      moveRabbit(playArray[0]);
+    }
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [playArray])
+
+
+  React.useEffect(() => {
+    const handleChanged = (e: any) => {
+      const value = e.target.value.getUint8(0).toString(10);
+
+      if (value === "1") {
+        setPlayArray(playArray => playArray.slice(1))
+      } else {
+        console.log(value);
+      } 
+    }
+
+    if (device) {
+      return device.startNotifications().then(() => {
+        console.log('> Notifications started');
+        device.addEventListener('characteristicvaluechanged', handleChanged);
+      });
+    }
+    
+    return (() => {
+      if (device) {
+        device.removeEventListener('characteristicvaluechanged', handleChanged);
+      }
+    })
+  }, [device])
+
 
   return (
     <GameContext.Provider value={{
@@ -274,6 +406,9 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       tempQueue,
       bluetoothConnect,
       draggingIndex,
+      ranking,
+      score,
+      resultVisible,
 
       changePage: setPage,
 
@@ -288,9 +423,13 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
 
       putMap,
       updateMap,
+      saveMap,
 
       setBluetoothDevice,
       sendQueueData,
+
+      updateResultVisible,
+      addRanking,
 
       changeDraggingIndex,
       changeActiveMap: setActiveMap

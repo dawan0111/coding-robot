@@ -45,8 +45,9 @@ export default function MapEdit() {
       )).map((type, index) => (
         <EditButton key={index} onClick={() => {
           if (isStartCoin(type) && mapStartIndex !== -1) {
-            updateMap(mapStartIndex, "empty")  
+            updateMap(mapStartIndex, "empty")
           }
+
           activeMap !== -1 && updateMap(activeMap, type)
         }}>
           {type === "empty" ? (

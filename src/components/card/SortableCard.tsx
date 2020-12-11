@@ -18,7 +18,6 @@ export default function SortableCard({
     tempQueue,
 
     addQueue,
-    deleteQueue,
     changeDraggingIndex,
     replaceQueue,
     reSortSetQueue,

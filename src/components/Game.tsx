@@ -12,6 +12,7 @@ import AudioPlayerContext from "../contexts/AudioContext";
 import PlayButton from "./game/PlayButton";
 import MapEditComponent from './game/MapEdit'
 import MapEditControl from "./game/MapEditControl";
+import ResultModal from "./game/ResultModal";
 
 const Wrapper = styled.div`
   position: relative;
@@ -140,19 +141,24 @@ function GamePlay() {
           </ControlWrapper>
         </Wrapper>
       }
+
+      <ResultModal />
     </>
   )
 }
 
 function MapEdit() {
-  const { page, changePage } = React.useContext(GameContext)
+  const { page, changePage, saveMap } = React.useContext(GameContext)
 
   return (
     <>
       {
         page === "mapEdit" &&
         <Wrapper>
-          <BackButton onClick={() => changePage("game")}><span className="material-icons">keyboard_backspace</span></BackButton>
+          <BackButton onClick={() => {
+            changePage("game");
+            saveMap();
+          }}><span className="material-icons">keyboard_backspace</span></BackButton>
           <MapEditComponent />
           <MapEditControl />
         </Wrapper>
