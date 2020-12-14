@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/coding-robot/static/css/main.9380e8c5.chunk.css",
-    "main.js": "/coding-robot/static/js/main.964f2c8e.chunk.js",
-    "main.js.map": "/coding-robot/static/js/main.964f2c8e.chunk.js.map",
+    "main.js": "/coding-robot/static/js/main.6c0decd2.chunk.js",
+    "main.js.map": "/coding-robot/static/js/main.6c0decd2.chunk.js.map",
     "runtime-main.js": "/coding-robot/static/js/runtime-main.21ac8d43.js",
     "runtime-main.js.map": "/coding-robot/static/js/runtime-main.21ac8d43.js.map",
     "static/js/2.50078ed3.chunk.js": "/coding-robot/static/js/2.50078ed3.chunk.js",
@@ -23,6 +23,6 @@
     "static/js/runtime-main.21ac8d43.js",
     "static/js/2.50078ed3.chunk.js",
     "static/css/main.9380e8c5.chunk.css",
-    "static/js/main.964f2c8e.chunk.js"
+    "static/js/main.6c0decd2.chunk.js"
   ]
 }
