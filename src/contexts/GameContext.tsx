@@ -191,6 +191,9 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       .then(function(characteristic: any) {
         setBluetoothConnect(true)
         setDevice(characteristic)
+        characteristic.startNotifications().then(() => {
+          console.log("aaa")
+        })
       })
       .catch(function(error: any) {
         console.error('Connection failed!', error);
@@ -239,9 +242,8 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
 
     if (device !== null) {
       device.writeValue(data)
+      setPlayArray(cardFlatArray)
     }
-
-    setPlayArray(cardFlatArray)
   }, [queue, device, mapStartIndex])
 
   const changeDraggingIndex = React.useCallback((index: number) => {
@@ -339,9 +341,9 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     setResultVisible(bool)
   }, [])
 
-  const gameEnd = () => {
+  const gameEnd = React.useCallback(() => {
     updateResultVisible(true);
-  }
+  }, [])
 
   React.useEffect(() => {
     if (!localStorage.getItem("map")) {
@@ -350,41 +352,24 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   }, [])
 
   React.useEffect(() => {
-    const timer = setTimeout(() => {
-      if (playArray.length !== 0) {
-        setPlayArray(playArray => playArray.slice(1))
-      }
-      if (playArray.length === 1) {
-        gameEnd()
-      }
-    }, 500)
-
-    if (playArray.length) {
-      moveRabbit(playArray[0]);
-    }
-
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [playArray])
-
-
-  React.useEffect(() => {
     const handleChanged = (e: any) => {
       const value = e.target.value.getUint8(0).toString(10);
+      console.log(value);
 
       if (value === "1") {
-        setPlayArray(playArray => playArray.slice(1))
-      } else {
-        console.log(value);
-      } 
+        if (playArray.length > 0) {
+          moveRabbit(playArray[0]);
+          setPlayArray(playArray => playArray.slice(1))
+        }
+        
+        if (playArray.length === 1) {
+          gameEnd();
+        }
+      }
     }
 
     if (device) {
-      return device.startNotifications().then(() => {
-        console.log('> Notifications started');
-        device.addEventListener('characteristicvaluechanged', handleChanged);
-      });
+      device.addEventListener('characteristicvaluechanged', handleChanged);
     }
     
     return (() => {
@@ -392,7 +377,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
         device.removeEventListener('characteristicvaluechanged', handleChanged);
       }
     })
-  }, [device])
+  }, [device, playArray, gameEnd, moveRabbit])
 
 
   return (

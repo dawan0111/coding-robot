@@ -53,10 +53,10 @@ const StartWrapper = styled.div`
 
 const MapScreen = styled.div`
   position: relative;
-  width: 70vh;
+  width: calc(70vh + 5vw);
   height: 56vh;
 
-  background: #999;
+  background: #fff ;
   border: .5rem solid #fff;
 
   & > img {
@@ -67,6 +67,7 @@ const MapScreen = styled.div`
 
 const SettingButton = styled.button`
   position: absolute;
+  z-index: 1001;
   right: -1rem;
   top: -1rem;
 

@@ -127,6 +127,34 @@ export function SortCardList({ parent }: Props) {
           }
         </div>
       ))}
+      {
+        (parent === undefined) && (
+          <>
+            <div
+              style={{
+                position: 'relative',
+              }}
+            >
+              <Card
+                cardIndex={Infinity}
+                type="temp"
+                temp={true}
+              />
+            </div>
+            <div
+              style={{
+                position: 'relative',
+              }}
+            >
+              <Card
+                cardIndex={Infinity}
+                type="temp"
+                temp={true}
+              />
+            </div>
+          </>
+        )
+      }
     </Wrapper>
   )
 }

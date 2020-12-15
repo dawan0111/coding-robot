@@ -110,7 +110,7 @@ export default function SortableCard({
     <div ref={ref} style={{
       display: draggingIndex === cardIndex ? "none" : "block",
       opacity: 1,
-      height: '100%',
+      height: '50%',
       position: 'relative'
     }}>
       <Card

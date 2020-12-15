@@ -4,12 +4,27 @@ import GameContext from '../../contexts/GameContext'
 
 import MapIcon from './MapIcon'
 
+import MapBgRight from '../../images/bg-right.jpg'
+
+
 const MapGrid = styled.div`
+  position: relative;
   display: flex;
   flex-wrap: wrap;
 
-  width: 100%;
+  width: calc(100% - 5vw);
   height: 100%;
+
+  &:after {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 5vw;
+    height: 100%;
+    background-color: #fff;
+    background: url(${MapBgRight}) no-repeat left top / auto 100%;
+    content: "";
+  }
 
   & > div {
     width: 20%;
