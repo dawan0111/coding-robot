@@ -21,7 +21,7 @@ code {
 body {
   width: 100vw;
   height: 100vh;
-  background: #99eadf;
+  background: url("./images/background.jpg") center center / cover;
 }
 
 #root, .App {

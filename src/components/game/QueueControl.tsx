@@ -7,6 +7,9 @@ import Card from '../card/Card'
 import { SortCardList } from '../card/CardList'
 import PlayButton from './PlayButton'
 
+import playImg from '../../images/play.svg'
+import resetImg from '../../images/reset.svg'
+
 const QueueForm = styled.div`
   display: flex;
   justify-content: center;
@@ -21,7 +24,7 @@ const QueueWrapper = styled.div`
   position: relative;
   display: flex;
   flex-wrap: nowrap;
-  width: 60%;
+  width: 55%;
   overflow: hidden;
 
   box-shadow: inset 1px 1px 1px rgba(0, 0, 0, .5);
@@ -32,7 +35,7 @@ const QueueWrapper = styled.div`
   padding-left: 1rem;
   margin-right: 1rem;
 
-  background: #72d4c7;
+  background: #A6F7FF;
 `
 
 const QueueScrollControl = styled.button<{isLeft?: boolean}>`
@@ -55,7 +58,7 @@ const Queue = styled.div`
 `
 
 export default function QueueControl() {
-  const { sendQueueData } = React.useContext(GameContext)
+  const { sendQueueData, sendResetMessage } = React.useContext(GameContext)
   const ref = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -87,7 +90,12 @@ export default function QueueControl() {
           <span className="material-icons">keyboard_arrow_right</span>
         </QueueScrollControl>
       </QueueWrapper>
-      <PlayButton onClick={() => sendQueueData()} />
+      <PlayButton onClick={() => sendQueueData()}>
+        <img src={playImg} alt="play" />
+      </PlayButton>
+      <PlayButton reset onClick={() => sendResetMessage()}>
+        <img src={resetImg} alt="reset" />
+      </PlayButton>
     </QueueForm>
   )
 }

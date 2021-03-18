@@ -31,21 +31,23 @@ const EditButton = styled.button`
 `
 
 export default function MapEdit() {
-  const { activeMap, updateMap, mapStartIndex } = React.useContext(GameContext)
+  const { activeMap, updateMap, mapStartIndex, mapEndIndex, mapX, mapY } = React.useContext(GameContext)
 
   return (
     <MapEditWrapper>
       {coins.filter((type) => (
-        (type === "start-left" && activeMap % 5 !== 0) ||
-        (type === "start-right" && activeMap % 5 !== 4) ||
-        (type === "start-up" && activeMap > 4) ||
-        (type === "start-down" && activeMap < 15) ||
+        (type === "start-left" && activeMap % mapX !== 0) ||
+        (type === "start-right" && activeMap % mapX !== mapX - 1) ||
+        (type === "start-up" && activeMap > mapX - 1) ||
+        (type === "start-down" && activeMap < (mapX - 1) * mapY) ||
         !isStartCoin(type) ||
         activeMap === -1
       )).map((type, index) => (
         <EditButton key={index} onClick={() => {
           if (isStartCoin(type) && mapStartIndex !== -1) {
             updateMap(mapStartIndex, "empty")
+          } else if (type === "end-point" && mapEndIndex !== -1) {
+            updateMap(mapEndIndex, "empty")
           }
 
           activeMap !== -1 && updateMap(activeMap, type)

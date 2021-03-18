@@ -2,7 +2,7 @@ import React from 'react'
 type audioT = "bgm" | "drop"
 
 const soundMapper: Record<audioT, string> = {
-  "bgm": require("../sounds/bgm.wav").default,
+  "bgm": require("../sounds/bgm2.wav").default,
   "drop": require("../sounds/drop.wav").default,
 }
 

@@ -2,13 +2,12 @@ import { on } from 'process'
 import React from 'react'
 import styled from 'styled-components'
 
-import playImg from '../../images/play.svg'
-
 const PlayBtn = styled.div`
   position: relative;
   z-index: 2;
   width: 3.5rem;
   height: 3.5rem;
+  margin-right: .5rem;
   border-radius: 50%;
   font-size: 0;
 
@@ -27,7 +26,7 @@ const PlayBtn = styled.div`
   }
 `
 
-const PlayBtnWrapper = styled.div<{pushing: boolean}>`
+const PlayBtnWrapper = styled.div<{pushing: boolean, reset?: boolean}>`
   position: relative;
   bottom: ${props => props.pushing ? '-0.25rem' : '0'};
   display: flex;
@@ -45,13 +44,21 @@ const PlayBtnWrapper = styled.div<{pushing: boolean}>`
   img {
     width: 30%;
   }
+
+  ${props => props.reset && (`
+    img {
+      width: 50%;
+    }
+  `)}
 `
 
 type Props = {
   onClick: () => void
+  children?: React.ReactNode
+  reset?: boolean
 }
 
-export default function PlayButton({ onClick }: Props) {
+export default function PlayButton({ onClick, reset, children }: Props) {
   const [pushing, setPushing] = React.useState(false)
 
   return (
@@ -64,8 +71,8 @@ export default function PlayButton({ onClick }: Props) {
       }}
       onClick={() => onClick()}
     >
-      <PlayBtnWrapper pushing={pushing}>
-        <img src={playImg} alt="play" />
+      <PlayBtnWrapper reset={reset} pushing={pushing}>
+        {children}
       </PlayBtnWrapper>
     </PlayBtn>
   )

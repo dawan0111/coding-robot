@@ -4,15 +4,20 @@ import { card, cardType } from '../types/card'
 import { coinT, isStartCoin } from '../types/coin'
 import { rankingT } from '../types/ranking'
 
+
+const DEBUG = true
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 const windowNavigator: any = navigator
 
 type pageT = 'mapEdit' | 'game' | 'gameStart'
 
 interface valueT {
+  mapX: number
+  mapY: number
   page: pageT
   map: Array<coinT>
   mapStartIndex: number
+  mapEndIndex: number
   queue: Array<card>
   playArray: Array<number>
   tempQueue: card | undefined
@@ -41,6 +46,7 @@ interface valueT {
 
   setBluetoothDevice: () => void
   sendQueueData: () => void
+  sendResetMessage: () => void
 
   changeDraggingIndex: (index: number) => void
   changeActiveMap: (index: number) => void
@@ -54,7 +60,9 @@ const GameContext = React.createContext({} as valueT)
 
 export default GameContext
 
-const defaultMap = Array(20).fill("empty");
+const MAP_X = 4
+const MAP_Y = 4
+const defaultMap = Array(MAP_X * MAP_Y).fill("empty");
 defaultMap[0] = "start-right";
 
 export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
@@ -84,6 +92,10 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
 
   const mapStartIndex = React.useMemo(() => (
     map.findIndex(isStartCoin)
+  ), [map])
+
+  const mapEndIndex = React.useMemo(() => (
+    map.findIndex((coin) => coin === "end-point")
   ), [map])
 
   const reSortSetQueue = React.useCallback((queue: Array<card>) => {
@@ -201,8 +213,8 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
   }, [])
 
   const sendQueueData = React.useCallback(() => {
-    if (mapStartIndex === -1) {
-      alert("맵에 시작부분을 설정해주세요!");
+    if (mapStartIndex === -1 && mapEndIndex === -1) {
+      alert("맵에 시작부분과 끝 부분 모두 설정해주세요!");
       return;
     }
     const hasingType: Record<cardType, number> = {
@@ -246,6 +258,13 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     }
   }, [queue, device, mapStartIndex])
 
+  const sendResetMessage = React.useCallback(() => {
+    if (device !== null) {
+      const data = new Uint8Array([0x05])
+      device.writeValue(data)
+    }
+  }, [device])
+
   const changeDraggingIndex = React.useCallback((index: number) => {
     setDraggingIndex(index)
   }, [])
@@ -270,7 +289,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     const _map = [...map];
     const direction = map[mapStartIndex];
     const move = (index:number, moveIndex: number, value: coinT) => {
-      if (moveIndex < 0 || moveIndex > 19) return;
+      if (moveIndex < 0 || moveIndex > MAP_X * MAP_Y - 1) return;
 
       _map[index] = "empty";
       _map[moveIndex] = value;
@@ -282,7 +301,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
    
     if (direction === "start-left") {
       if (action === "go") {
-        if (mapStartIndex % 5 !== 0) {
+        if (mapStartIndex % MAP_X !== 0) {
           move(mapStartIndex, mapStartIndex - 1, direction);
         }
       } else if (action === "left-rotate") {
@@ -292,7 +311,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       }
     } else if (direction === "start-up") {
       if (action === "go") {
-        move(mapStartIndex, mapStartIndex - 5, direction);
+        move(mapStartIndex, mapStartIndex - MAP_X, direction);
       } else if (action === "left-rotate") {
         move(mapStartIndex, mapStartIndex, "start-left");
       } else if (action === "right-rotate") {
@@ -300,7 +319,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       }
     } else if (direction === "start-right") {
       if (action === "go") {
-        if (mapStartIndex % 5 !== 4) {
+        if (mapStartIndex % MAP_X !== MAP_X - 1) {
           move(mapStartIndex, mapStartIndex + 1, direction);
         }
       } else if (action === "left-rotate") {
@@ -310,7 +329,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       }
     } else if (direction === "start-down") {
       if (action === "go") {
-        move(mapStartIndex, mapStartIndex + 5, direction);
+        move(mapStartIndex, mapStartIndex + MAP_X, direction);
       } else if (action === "left-rotate") {
         move(mapStartIndex, mapStartIndex, "start-right");
       } else if (action === "right-rotate") {
@@ -382,10 +401,13 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
 
   return (
     <GameContext.Provider value={{
+      mapX: MAP_X,
+      mapY: MAP_Y,
       page,
       activeMap,
       map,
       mapStartIndex,
+      mapEndIndex,
       queue,
       playArray,
       tempQueue,
@@ -412,6 +434,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
 
       setBluetoothDevice,
       sendQueueData,
+      sendResetMessage,
 
       updateResultVisible,
       addRanking,

@@ -14,6 +14,8 @@ import MapEditComponent from './game/MapEdit'
 import MapEditControl from "./game/MapEditControl";
 import ResultModal from "./game/ResultModal";
 
+import playImg from '../images/play.svg'
+
 const Wrapper = styled.div`
   position: relative;
   display: flex;
@@ -53,11 +55,11 @@ const StartWrapper = styled.div`
 
 const MapScreen = styled.div`
   position: relative;
-  width: calc(70vh + 5vw);
+  width: calc(60vh + 5vw);
   height: 56vh;
 
-  background: #fff ;
-  border: .5rem solid #fff;
+  background: #008399 ;
+  border: .5rem solid #008399;
 
   & > img {
     width: auto;
@@ -111,7 +113,9 @@ function GameStart() {
             play("bgm", {
               loop: true
             })
-          }} />
+          }}>
+            <img src={playImg} alt="paly btn"/>
+          </PlayButton>
         </StartWrapper>
       }
     </>

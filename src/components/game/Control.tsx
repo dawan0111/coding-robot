@@ -32,7 +32,7 @@ const ItemWrapper = styled.div`
   width: 100%;
   padding-top: .5rem;
   padding-bottom: .5rem;
-  background: #48baa4;
+  background: rgba(0, 0, 0, .1);
 
   & > div {
     margin-left: .5rem;

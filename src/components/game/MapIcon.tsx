@@ -1,6 +1,6 @@
 import React from 'react'
-import carrotImage from '../../images/carrot.svg'
-import rabbitImage from '../../images/rabbit.svg'
+import iglooImage from '../../images/igloo.svg'
+import penguinImage from '../../images/penguin.svg'
 import { coinT, isStartCoin } from '../../types/coin'
 
 type Props = {
@@ -23,7 +23,7 @@ function getRotate(type: coinT) {
 export default function MapIcon({ type }: Props) {
   return (
     <>
-      {type === "carrot" && <img src={carrotImage} alt="당근" className="mapIcon" />}
+      {type === "end-point" && <img src={iglooImage} alt="이글루" className="mapIcon" />}
       {isStartCoin(type) && (
         <div style={{
           position: "relative",
@@ -41,7 +41,7 @@ export default function MapIcon({ type }: Props) {
             transform: `translate(-50%, -50%) rotate(${getRotate(type)}deg)`,
 
           }} >keyboard_backspace</span>
-          <img src={rabbitImage} alt="시작점" className="mapIcon"/>
+          <img src={penguinImage} alt="시작점" className="mapIcon"/>
         </div>
       )}
     </>

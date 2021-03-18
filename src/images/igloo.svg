@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 241.68825 179.53789" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <linearGradient id="a">
+   <stop stop-color="#fff" offset="0"/>
+   <stop stop-color="#a3bcdf" offset="1"/>
+  </linearGradient>
+  <radialGradient id="c" cx="902.38" cy="56.972" r="100.84" gradientTransform="matrix(1.7317 0 0 1.5417 -701.48 229.39)" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+  <radialGradient id="b" cx="969.51" cy="350.98" r="55.177" gradientTransform="matrix(1.0262 0 0 .69993 -25.417 114.98)" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+ </defs>
+ <g transform="translate(-792.27 -240.72)">
+  <path d="m992.44 336.5c0 25.19 0.744 38.43-16.082 55.343-17.956 18.049-54.385 26.8-82.49 26.8-28.847 0-72.026 2.5243-90.683-15.744-14.564-14.261-7.8887-41.919-7.8887-66.398 0-52.073 44.132-94.286 98.571-94.286s98.571 42.213 98.571 94.286z" fill="url(#c)" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m996.9 358.82c19.815-2.867 27.3 26.569 27.143 47.321-24.451-3.7426-41.974-5.112-43.393 9.2857-16.129-16.499 4.0938-54.187 16.25-56.607z" fill="#6d91c0"/>
+  <path d="m979.99 416.09c-0.099-29.244 9.8223-52.511 22.449-54.508s20.83 20.196 20.673 44.997l9.3602-1.6552c-9.603-19.895-5.3231-43.308-21.309-53.255s-31.717-6.4144-53.903-2.4759-34.037 53.948-31.894 65.019l45.269 3.2705z" fill="url(#b)" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m969.22 411.14c1.6736-36.429 15.692-51.786 16.428-51.786" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m989.22 356.85c4.0399-3.944 9.4201-5.2074 15.357-5.3571" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m813.87 294.35c16.428 7.5 35.714 7.8572 35.714 7.8572" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m867.44 302.93c17.857 7.8571 49.286-0.35714 49.286-0.35714" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m968.51 289c-25.357 13.571-28.214 12.143-28.214 12.143" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m939.22 264c-25.357 6.0714-34.286 6.0714-34.286 6.0714" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m853.51 265.07c28.929 8.5714 31.786 7.1429 31.786 7.1429" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m870.65 280.78c-3.2143 9.6429-4.2857 17.857-4.2857 17.857" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m926.01 278.28c11.072 16.786 12.857 18.571 12.857 18.571" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m881.72 316.14c0.7143 18.929 0.7143 19.643 0.7143 19.643" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m865.3 341.14c-7.5 19.286-5.3571 27.143-5.3571 27.143" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m829.94 305.07c-3.2143 9.2857-5.7143 15.714-5.7143 15.714-9.4756 3.1812-15.762-1.0788-22.5-4.2857" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m920.65 361.85c-1.4286-16.429-1.0714-23.929-1.0714-23.929 1.4882 1.7588 53.046-2.9914 55.714-7.5" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m929.27 375.07c-21.247 5.822-33.053 5.3691-50.239 5.2773-19.196-0.10251-42.664 0.53727-56.747-7.04" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="m812.44 372.57c-2.5 19.643-2.1429 27.857-2.1429 27.857" fill="none" stroke="#253940" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+ </g>
+</svg>

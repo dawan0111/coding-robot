@@ -1,7 +1,7 @@
 import React from "react";
 import styled from 'styled-components'
 
-import startImg from '../../images/start.png'
+import startImg from '../../images/start.svg'
 import leftRotateImg from '../../images/left-rotate.png'
 import rightRotateImg from '../../images/right-rotate.png'
 import goImg from '../../images/go.png'
