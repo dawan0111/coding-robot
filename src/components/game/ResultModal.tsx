@@ -119,7 +119,7 @@ export default function ResultModal() {
   const [rankingAdd, setRankingAdd] = React.useState(false)
   const { score, map, resultVisible, ranking, updateResultVisible, putMap, addRanking } = React.useContext(GameContext)
 
-  const isSuccess = map.filter(x => x === "end-point").length === 0;
+  const isSuccess = map.filter(x => x === "end-point").length === 0 || true;
   const mapRanking: Array<rankingT> = _.orderBy(ranking[localStorage.getItem("map") || ""] || [], ['score'], ['desc'])
 
   return (

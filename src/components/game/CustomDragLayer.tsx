@@ -2,7 +2,6 @@ import React from 'react'
 import { XYCoord, useDragLayer } from 'react-dnd'
 import GameContext from '../../contexts/GameContext'
 import Card from '../card/Card'
-import CardList from '../card/CardList'
 
 const layerStyles: React.CSSProperties = {
   position: 'fixed',

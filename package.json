@@ -15,6 +15,7 @@
     "@types/react-dnd-multi-backend": "^6.0.0",
     "@types/react-dom": "^16.9.8",
     "@types/styled-components": "^5.1.4",
+    "constate": "^3.2.0",
     "lodash": "^4.17.20",
     "react": "^17.0.1",
     "react-dnd": "^11.1.3",

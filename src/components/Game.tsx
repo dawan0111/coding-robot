@@ -124,18 +124,18 @@ function GameStart() {
 
 
 function GamePlay() {
-  const { page, changePage } = React.useContext(GameContext)
+  // const { page, changePage } = React.useContext(GameContext)
+  console.log('re render!!');
   return (
     <>
       {
-        page === "game" &&
         <Wrapper>
           <MapWrapper>
             <StatusBar>
               <BluetoothButton />
             </StatusBar>
             <MapScreen>
-              <SettingButton onClick={() => changePage("mapEdit")}>
+              <SettingButton onClick={() => {}}>
                 <span className="material-icons">settings</span>
               </SettingButton>
               <Map />

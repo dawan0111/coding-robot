@@ -1,11 +1,9 @@
-import { render } from '@testing-library/react'
-import { update } from 'lodash'
 import React from 'react'
 import { useDrop } from 'react-dnd'
 import styled from 'styled-components'
 import AudioPlayerContext from '../../contexts/AudioContext'
 import GameContext from '../../contexts/GameContext'
-import { card, cardSortEvent, cardType, draggableCard } from '../../types/card'
+import { card, draggableCard } from '../../types/card'
 import Card from './Card'
 import SortableCard from './SortableCard'
 

@@ -66,7 +66,7 @@ const defaultMap = Array(MAP_X * MAP_Y).fill("empty");
 defaultMap[0] = "start-right";
 
 export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
-  const [page, setPage] = React.useState<pageT>("gameStart")
+  const [page, setPage] = React.useState<pageT>("game")
   const [queue, setQueue] = React.useState<Array<card>>([])
   const [map, setMap] = React.useState<Array<coinT>>(
     localStorage.getItem("map") ? JSON.parse(localStorage.getItem("map") || "[]") : defaultMap
