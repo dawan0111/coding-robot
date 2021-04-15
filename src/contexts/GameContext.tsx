@@ -4,8 +4,6 @@ import { card, cardType } from '../types/card'
 import { coinT, isStartCoin } from '../types/coin'
 import { rankingT } from '../types/ranking'
 
-
-const DEBUG = true
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 const windowNavigator: any = navigator
 

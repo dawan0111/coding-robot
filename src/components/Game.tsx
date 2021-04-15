@@ -1,20 +1,22 @@
 import React from "react";
+import constate from "constate";
 import { DndProvider } from 'react-dnd-multi-backend';
 import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch'; 
 import styled from 'styled-components'
-import GameContext, { GameContextProvider } from "../contexts/GameContext";
-import Map from './game/Map'
+import { GameContextProvider } from "../contexts/GameContext";
+import useGame from '../hooks/useGame'
+import AudioPlayerContext from "../contexts/AudioContext";
+import Map from './game/Map';
 import BluetoothButton from "./game/BluetoothButton";
 
 import Control from "./game/Control";
 import { CustomDragLayer } from "./game/CustomDragLayer";
-import AudioPlayerContext from "../contexts/AudioContext";
 import PlayButton from "./game/PlayButton";
-import MapEditComponent from './game/MapEdit'
+import MapEditComponent from './game/MapEdit';
 import MapEditControl from "./game/MapEditControl";
 import ResultModal from "./game/ResultModal";
 
-import playImg from '../images/play.svg'
+import playImg from '../images/play.svg';
 
 const Wrapper = styled.div`
   position: relative;
@@ -25,7 +27,6 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
 `
-
 const MapWrapper = styled.div`
   display: flex;
   flex: 1;
@@ -34,17 +35,14 @@ const MapWrapper = styled.div`
   position: relative;
   width: 100%;
 `
-
 const ControlWrapper = styled.div`
   width: 100%;
 `
-
 const StatusBar = styled.div`
   position: absolute;
   right: 1rem;
   top: 1rem;
 `
-
 const StartWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -52,7 +50,6 @@ const StartWrapper = styled.div`
   width: 100%;
   height: 100%;
 `
-
 const MapScreen = styled.div`
   position: relative;
   width: calc(60vh + 5vw);
@@ -66,7 +63,6 @@ const MapScreen = styled.div`
     height: 100%;
   }
 `
-
 const SettingButton = styled.button`
   position: absolute;
   z-index: 1001;
@@ -85,7 +81,6 @@ const SettingButton = styled.button`
     font-size: 1rem;
   }
 `
-
 const BackButton = styled.button`
   position: absolute;
   top: 1rem;
@@ -99,17 +94,24 @@ const BackButton = styled.button`
   }
 `
 
+const [GameProvider, usePage, useChangePage] = constate(
+  useGame,
+  value => value.page,
+  value => value.setPage
+)
+
 function GameStart() {
-  const { page, changePage } = React.useContext(GameContext)
+  const page = usePage()
+  const changePage = useChangePage()
   const { play } = React.useContext(AudioPlayerContext)
 
   return (
     <>
       {
-        page === "gameStart" &&
+        page === "GAME_START" &&
         <StartWrapper>
           <PlayButton onClick={() => {
-            changePage("game")
+            changePage("GAME_PLAY")
             play("bgm", {
               loop: true
             })
@@ -122,20 +124,22 @@ function GameStart() {
   )
 }
 
-
 function GamePlay() {
-  // const { page, changePage } = React.useContext(GameContext)
-  console.log('re render!!');
+  const page = usePage()
+  const changePage = useChangePage()
+
   return (
     <>
-      {
+      {page === "GAME_PLAY" &&
         <Wrapper>
           <MapWrapper>
             <StatusBar>
               <BluetoothButton />
             </StatusBar>
             <MapScreen>
-              <SettingButton onClick={() => {}}>
+              <SettingButton onClick={() => {
+                changePage("MAP_EDIT")
+              }}>
                 <span className="material-icons">settings</span>
               </SettingButton>
               <Map />
@@ -146,23 +150,23 @@ function GamePlay() {
           </ControlWrapper>
         </Wrapper>
       }
-
       <ResultModal />
     </>
   )
 }
 
 function MapEdit() {
-  const { page, changePage, saveMap } = React.useContext(GameContext)
+  const page = usePage()
+  const changePage = useChangePage()
 
   return (
     <>
       {
-        page === "mapEdit" &&
+        page === "MAP_EDIT" &&
         <Wrapper>
           <BackButton onClick={() => {
-            changePage("game");
-            saveMap();
+            changePage("GAME_PLAY");
+            // saveMap();
           }}><span className="material-icons">keyboard_backspace</span></BackButton>
           <MapEditComponent />
           <MapEditControl />
@@ -174,13 +178,15 @@ function MapEdit() {
 
 export default function Game() {
   return (
-    <GameContextProvider>
-      <DndProvider options={HTML5toTouch}>
-        <CustomDragLayer snapToGrid={false} />
-        <GamePlay />
-        <MapEdit />
-        <GameStart />
-      </DndProvider>
-    </GameContextProvider>
+    <GameProvider>
+      <GameContextProvider>
+        <DndProvider options={HTML5toTouch}>
+          <CustomDragLayer snapToGrid={false} />
+          <GamePlay />
+          <MapEdit />
+          <GameStart />
+        </DndProvider>
+      </GameContextProvider>
+    </GameProvider>
   )
 }
