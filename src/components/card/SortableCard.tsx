@@ -11,7 +11,6 @@ import AudioPlayerContext from '../../contexts/AudioContext'
 import useDragDrop from '../../hooks/useDragDrop'
 import useQueue from '../../hooks/useQueue'
 
-
 export default function SortableCard({
   type, index, cardIndex, temp, parent
 }: sortCardC) {
