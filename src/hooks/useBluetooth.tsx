@@ -2,19 +2,14 @@ import React from 'react'
 import { shallowEqual, useDispatch } from 'react-redux'
 
 import { useRootSelector } from './useRootState'
-import { setDevice, setDeviceConnect } from '../stores/modules/bluetooth'
-import { bluetooth } from '../types/bluetooth'
+import { setDevice, setDeviceConnect, setReadCallback as _setReadCallback } from '../stores/modules/bluetooth'
 
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 const windowNavigator: any = navigator
 
-type bluetoothProps = {
-  onRead ?: (e:any) => void
-}
-
-export default function useBluetooth({ onRead }: bluetoothProps): bluetooth {
+export default function useBluetooth() {
   const dispatch = useDispatch()
-  const { device, bluetoothConnect } = useRootSelector(state => state.bluetooth, shallowEqual)
+  const { device, bluetoothConnect, readCallback } = useRootSelector(state => state.bluetooth, shallowEqual)
 
   const setBluetoothDevice = React.useCallback(() => {
     return new Promise<boolean>((resolve, reject) => {
@@ -50,21 +45,33 @@ export default function useBluetooth({ onRead }: bluetoothProps): bluetooth {
     })
   }, [dispatch])
 
+  const sendData = React.useCallback((data: Uint8Array) => {
+    if (device !== null) {
+      device.writeValue(data)
+    }
+  }, [device])
+
+  const setReadCallback = (callbackFn: (e:any) => void) => {
+    dispatch(_setReadCallback(callbackFn))
+  }
+
   React.useEffect(() => {
-    if (device) {
-      device.addEventListener('characteristicvaluechanged', onRead);
+    if (device && readCallback) {
+      device.addEventListener('characteristicvaluechanged', readCallback);
     }
     return (() => {
-      if (device) {
-        device.removeEventListener('characteristicvaluechanged', onRead);
+      if (device && readCallback) {
+        device.removeEventListener('characteristicvaluechanged', readCallback);
       }
     })
-  }, [device, onRead])
+  }, [device, readCallback])
 
   return {
     device,
     bluetoothConnect,
 
-    setBluetoothDevice
+    sendData,
+    setBluetoothDevice,
+    setReadCallback
   }
 }

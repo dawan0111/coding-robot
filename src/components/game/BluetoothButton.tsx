@@ -14,7 +14,7 @@ const Button = styled.button<{ connect: boolean }>`
 `
 
 export default function BluetoothButton() {
-  const { bluetoothConnect, setBluetoothDevice } = useBluetooth({})
+  const { bluetoothConnect, setBluetoothDevice } = useBluetooth()
   return (
     <Button connect={bluetoothConnect} onClick={() => setBluetoothDevice()}>
       <span className="material-icons">bluetooth</span>

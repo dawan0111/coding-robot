@@ -2,12 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type bluetoothState = {
   device: any,
-  bluetoothConnect: boolean
+  bluetoothConnect: boolean,
+  readCallback?: (e:any) => void
 }
 
 const initialState: bluetoothState = {
   device: null,
-  bluetoothConnect: false
+  bluetoothConnect: false,
+  readCallback: undefined
 }
 
 const bluetoothSlice = createSlice({
@@ -20,9 +22,13 @@ const bluetoothSlice = createSlice({
 
     setDeviceConnect(state, action: PayloadAction<boolean>) {
       state.bluetoothConnect = action.payload
+    },
+
+    setReadCallback(state, action: PayloadAction<(e:any) => void>) {
+      state.readCallback = action.payload
     }
   }
 })
 
-export const { setDevice, setDeviceConnect } = bluetoothSlice.actions
+export const { setDevice, setDeviceConnect, setReadCallback } = bluetoothSlice.actions
 export default bluetoothSlice.reducer
