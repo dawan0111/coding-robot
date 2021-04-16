@@ -1,9 +1,6 @@
-import React from 'react'
 import styled from 'styled-components'
 import forStartImg from '../../images/for-start.png'
 import forEndImg from '../../images/for-end.png'
-import { useDrop, XYCoord } from 'react-dnd'
-import { card, cardSortEvent, draggableCard } from '../../types/card'
 import { SortCardList } from './CardList'
 
 const ForWrapper = styled.div`

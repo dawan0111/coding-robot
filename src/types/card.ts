@@ -7,6 +7,7 @@ export type card = {
   index: number
   parent?: number
 }
+
 export type cardC = {
   type: cardType
   active?: boolean

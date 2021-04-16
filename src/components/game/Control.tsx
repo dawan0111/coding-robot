@@ -7,8 +7,9 @@ import { cardType, draggableCard } from "../../types/card";
 
 import DraggableCard from "../card/DraggableCard";
 import QueueControl from "./QueueControl";
-import GameContext from "../../contexts/GameContext";
 import AudioPlayerContext from "../../contexts/AudioContext";
+import { useDispatch } from "react-redux";
+import { remove } from "../../stores/modules/queue";
 
 const Wrapper = styled.div`
   position: relative;
@@ -43,14 +44,14 @@ const ItemWrapper = styled.div`
 const usingCards: Array<cardType> = ["go", "left-rotate", "right-rotate", "for"]
 
 export default function Control() {
-  const { deleteQueue } = React.useContext(GameContext)
+  const dispatch = useDispatch()
   const { play } = React.useContext(AudioPlayerContext)
   
   const [, drop] = useDrop({
     accept: "sortCard",
     drop(item: draggableCard) {
       play("drop")
-      deleteQueue(item.index);
+      dispatch(remove(item.index))
       return undefined
     },
   })

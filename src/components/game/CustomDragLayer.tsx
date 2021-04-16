@@ -1,8 +1,6 @@
 import React from 'react'
 import { XYCoord, useDragLayer } from 'react-dnd'
-import GameContext from '../../contexts/GameContext'
 import Card from '../card/Card'
-import CardList from '../card/CardList'
 
 const layerStyles: React.CSSProperties = {
   position: 'fixed',
@@ -40,8 +38,6 @@ export interface CustomDragLayerProps {
 }
 
 export const CustomDragLayer: React.FC<CustomDragLayerProps> = (props) => {
-  const { queue, draggingIndex } = React.useContext(GameContext)
-
   const {
     itemType,
     isDragging,

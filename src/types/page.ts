@@ -1,0 +1,1 @@
+export type page = "GAME_START" | "GAME_PLAY" | "MAP_EDIT"

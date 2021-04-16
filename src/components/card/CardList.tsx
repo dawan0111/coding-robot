@@ -1,11 +1,10 @@
-import { render } from '@testing-library/react'
-import { update } from 'lodash'
 import React from 'react'
 import { useDrop } from 'react-dnd'
 import styled from 'styled-components'
 import AudioPlayerContext from '../../contexts/AudioContext'
-import GameContext from '../../contexts/GameContext'
-import { card, cardSortEvent, cardType, draggableCard } from '../../types/card'
+import useDragDrop from '../../hooks/useDragDrop'
+import useQueue from '../../hooks/useQueue'
+import { card, draggableCard } from '../../types/card'
 import Card from './Card'
 import SortableCard from './SortableCard'
 
@@ -33,18 +32,18 @@ type Props = {
   parent?: number
 }
 
-export function SortCardList({ parent }: Props) { 
+export const SortCardList = React.memo(function({ parent }: Props) {
   const {
-    queue,
+    data: queue,
     tempQueue,
-    draggingIndex,
 
-    addQueue, 
-    deleteQueue,
-    reSortSetQueue,
+    addQueue,
+    removeQueue,
     getQueueDeps,
-    updateQueue
-  } = React.useContext(GameContext)
+    updateQueue,
+    setQueue
+  } = useQueue()
+  const { draggingIndex } = useDragDrop()
 
   const { play } = React.useContext(AudioPlayerContext)
   const deps = getQueueDeps(parent)
@@ -54,7 +53,6 @@ export function SortCardList({ parent }: Props) {
 
     hover() {
       if (isOverCurrent && tempQueue && parent !== tempQueue.parent) {
-        console.log("hover!!")
         updateQueue(tempQueue.index, {
           ...tempQueue,
           parent
@@ -66,7 +64,8 @@ export function SortCardList({ parent }: Props) {
       if (monitor.didDrop()) return;
 
       play('drop')
-      reSortSetQueue(
+      
+      setQueue(
         queue
           .map((val) => {
             return val.parent === draggingIndex ? ({
@@ -91,7 +90,7 @@ export function SortCardList({ parent }: Props) {
       if (!tempQueue && hovered) {
         addQueue(item.data.type, parent, true)
       } else if (tempQueue && !hovered) {
-        deleteQueue(tempQueue.index);
+        removeQueue(tempQueue.index);
       }
     }
   }, [hovered])
@@ -130,22 +129,18 @@ export function SortCardList({ parent }: Props) {
       {
         (parent === undefined) && (
           <>
-            <div
-              style={{
+            <div style={{
                 position: 'relative',
-              }}
-            >
+            }}>
               <Card
                 cardIndex={Infinity}
                 type="temp"
                 temp={true}
               />
             </div>
-            <div
-              style={{
+            <div style={{
                 position: 'relative',
-              }}
-            >
+            }}>
               <Card
                 cardIndex={Infinity}
                 type="temp"
@@ -157,7 +152,7 @@ export function SortCardList({ parent }: Props) {
       }
     </Wrapper>
   )
-}
+})
 
 export default function CardList({ cards = [] }: Props) {
   return (
