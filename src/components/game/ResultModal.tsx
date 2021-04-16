@@ -1,7 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import GameContext from '../../contexts/GameContext'
+import { useRootSelector } from '../../hooks/useRootState'
+import { toggleResult } from '../../stores/modules/game'
+import { set } from '../../stores/modules/map'
+import { add } from '../../stores/modules/ranking'
 import { Modal, ModalPopup } from '../../style'
 import { rankingT } from '../../types/ranking'
 
@@ -115,11 +120,17 @@ const ActionButton = styled.button`
 `
 
 export default function ResultModal() {
+  const dispatch = useDispatch()
   const [name, setName] = React.useState("")
   const [rankingAdd, setRankingAdd] = React.useState(false)
-  const { score, map, resultVisible, ranking, updateResultVisible, putMap, addRanking } = React.useContext(GameContext)
 
-  const isSuccess = map.filter(x => x === "end-point").length === 0 || true;
+  const resultVisible = useRootSelector(state => state.game.resultVisible)
+  const ranking = useRootSelector(state => state.ranking.data)
+  const queue = useRootSelector(state => state.queue.data)
+  const map = useRootSelector(state => state.map.data)
+
+  const score = 9000 - (queue.length * 100)
+  const isSuccess = map.filter(x => x === "end-point").length === 0;
   const mapRanking: Array<rankingT> = _.orderBy(ranking[localStorage.getItem("map") || ""] || [], ['score'], ['desc'])
 
   return (
@@ -161,7 +172,13 @@ export default function ResultModal() {
                   if (name === "") {
                     alert("이름을 입력해주세요.")
                   } else {
-                    addRanking(name)
+                    dispatch(add({
+                      key: localStorage.getItem("map") || "",
+                      info: {
+                        name,
+                        score
+                      }
+                    }))
                     setName("")
                     setRankingAdd(true)
                   }
@@ -180,9 +197,10 @@ export default function ResultModal() {
             )
           }
           <ActionButton onClick={() => {
+            setName("")
             setRankingAdd(false)
-            updateResultVisible(false)
-            // putMap(JSON.parse(localStorage.getItem("map") || "[]"));
+            dispatch(toggleResult(false))
+            dispatch(set(JSON.parse(localStorage.getItem("map") || "[]")))
           }}>확인</ActionButton>
         </Wrapper>
       </ModalPopup>

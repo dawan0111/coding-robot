@@ -5,10 +5,10 @@ import Card from '../card/Card'
 
 
 import { SortCardList } from '../card/CardList'
-import PlayButton from './PlayButton'
+import PushButton from './PushButton'
 
-import playImg from '../../images/play.svg'
 import resetImg from '../../images/reset.svg'
+import PlayButton from './PlayButton'
 
 const QueueForm = styled.div`
   display: flex;
@@ -58,7 +58,6 @@ const Queue = styled.div`
 `
 
 export default function QueueControl() {
-  const { sendQueueData, sendResetMessage } = React.useContext(GameContext)
   const ref = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -90,12 +89,7 @@ export default function QueueControl() {
           <span className="material-icons">keyboard_arrow_right</span>
         </QueueScrollControl>
       </QueueWrapper>
-      <PlayButton onClick={() => sendQueueData()}>
-        <img src={playImg} alt="play" />
-      </PlayButton>
-      <PlayButton reset onClick={() => sendResetMessage()}>
-        <img src={resetImg} alt="reset" />
-      </PlayButton>
+      <PlayButton />
     </QueueForm>
   )
 }

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { cardType } from '../../types/card'
 import { coinT } from '../../types/coin'
 
 type mapState = {
@@ -46,7 +47,7 @@ const mapSlice = createSlice({
 
     save(state) {
       localStorage.setItem("map", JSON.stringify(state.data));
-    }
+    },
   }
 })
 

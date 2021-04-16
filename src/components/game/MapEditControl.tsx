@@ -1,7 +1,7 @@
-import React from 'react'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import GameContext from '../../contexts/GameContext'
 import useMap from '../../hooks/useMap'
+import { update } from '../../stores/modules/map'
 import { coins, isStartCoin } from '../../types/coin'
 import MapIcon from './MapIcon'
 
@@ -32,7 +32,8 @@ const EditButton = styled.button`
 `
 
 export default function MapEdit() {
-  const { x: mapX, y: mapY, active: activeMap, mapStartIndex, mapEndIndex, updateMap } = useMap()
+  const dispatch = useDispatch()
+  const { x: mapX, y: mapY, active: activeMap, mapStartIndex, mapEndIndex } = useMap()
 
   return (
     <MapEditWrapper>
@@ -46,12 +47,21 @@ export default function MapEdit() {
       )).map((type, index) => (
         <EditButton key={index} onClick={() => {
           if (isStartCoin(type) && mapStartIndex !== -1) {
-            updateMap(mapStartIndex, "empty")
+            dispatch(update({
+              index: mapStartIndex,
+              coin: "empty"
+            }))
           } else if (type === "end-point" && mapEndIndex !== -1) {
-            updateMap(mapEndIndex, "empty")
+            dispatch(update({
+              index: mapEndIndex,
+              coin: "empty"
+            }))
           }
 
-          activeMap !== -1 && updateMap(activeMap, type)
+          activeMap !== -1 && dispatch(update({
+            index: activeMap,
+            coin: type
+          }))
         }}>
           {type === "empty" ? (
             <span className="material-icons">delete</span>

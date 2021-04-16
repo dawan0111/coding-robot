@@ -3,20 +3,22 @@ import { DndProvider } from 'react-dnd-multi-backend';
 import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch'; 
 import styled from 'styled-components'
 import { GameContextProvider } from "../contexts/GameContext";
-import useGame from '../hooks/useGame'
-import useMap from "../hooks/useMap";
 import AudioPlayerContext from "../contexts/AudioContext";
 import Map from './game/Map';
 import BluetoothButton from "./game/BluetoothButton";
 
 import Control from "./game/Control";
 import { CustomDragLayer } from "./game/CustomDragLayer";
-import PlayButton from "./game/PlayButton";
+import PlayButton from "./game/PushButton";
 import MapEditComponent from './game/MapEdit';
 import MapEditControl from "./game/MapEditControl";
 import ResultModal from "./game/ResultModal";
 
 import playImg from '../images/play.svg';
+import { useRootSelector } from "../hooks/useRootState";
+import { mapEdit, start } from "../stores/modules/game";
+import { useDispatch } from "react-redux";
+import { save } from "../stores/modules/map";
 
 const Wrapper = styled.div`
   position: relative;
@@ -95,13 +97,13 @@ const BackButton = styled.button`
 `
 
 function GameStart() {
+  const dispatch = useDispatch()
   const { play } = React.useContext(AudioPlayerContext)
-  const { startGame } = useGame()
 
   return (
     <StartWrapper>
       <PlayButton onClick={() => {
-        startGame()
+        dispatch(start())
         play("bgm", { loop: true })
       }}>
         <img src={playImg} alt="paly btn"/>
@@ -111,7 +113,7 @@ function GameStart() {
 }
 
 function GamePlay() {
-  const { changeMapEdit } = useGame()
+  const dispatch = useDispatch()
   
   return (
     <>
@@ -122,7 +124,7 @@ function GamePlay() {
           </StatusBar>
           <MapScreen>
             <SettingButton onClick={() => {
-              changeMapEdit()
+              dispatch(mapEdit())
             }}>
               <span className="material-icons">settings</span>
             </SettingButton>
@@ -139,13 +141,13 @@ function GamePlay() {
 }
 
 function MapEdit() {
-  const { startGame } = useGame()
-  const { saveMap } = useMap()
+  const dispatch = useDispatch()
+
   return (
     <Wrapper>
       <BackButton onClick={() => {
-        startGame()
-        saveMap();
+        dispatch(start())
+        dispatch(save())
       }}><span className="material-icons">keyboard_backspace</span></BackButton>
       <MapEditComponent />
       <MapEditControl />
@@ -154,7 +156,7 @@ function MapEdit() {
 }
 
 export default function Game() {
-  const { page } = useGame();
+  const page = useRootSelector(state => state.game.page);
 
   return (
     <GameContextProvider>

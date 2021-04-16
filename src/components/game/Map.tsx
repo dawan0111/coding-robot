@@ -1,11 +1,11 @@
-import React from 'react'
 import styled from 'styled-components'
-import GameContext from '../../contexts/GameContext'
 
 import MapIcon from './MapIcon'
 
 import MapBgRight from '../../images/bg-right.png'
-import useMap from '../../hooks/useMap'
+import { useRootSelector } from '../../hooks/useRootState'
+import { shallowEqual, useDispatch } from 'react-redux'
+import { activeOffset } from '../../stores/modules/map'
 
 
 const MapGrid = styled.div<{ x: number, y: number }>`
@@ -61,17 +61,23 @@ type Props = {
 }
 
 export default function Map({ editable = false }: Props) {
-  const { data: map, x: mapX, y: mapY, active: activeMap, changeActiveOffset } = useMap()
+  const dispatch = useDispatch()
+  const { map, mapX, mapY, active } = useRootSelector(state => ({
+    map: state.map.data,
+    mapX: state.map.x,
+    mapY: state.map.y,
+    active: state.map.active
+  }), shallowEqual)
 
   return (
     <MapGrid x={mapX} y={mapY}>
       {map.map((val, index) => (
         <MapGridItem
           odd={(Math.floor(index / mapX) + index % mapX) % 2 === 1}
-          active={editable && activeMap === index}
+          active={editable && active === index}
           key={index}
           onClick={() => {
-            editable && changeActiveOffset(activeMap === index ? -1 : index);
+            editable && dispatch(activeOffset(active === index ? -1 : index));
           }}
         >
           <MapIcon type={val} />

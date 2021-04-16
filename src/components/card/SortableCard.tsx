@@ -5,20 +5,20 @@ import { useDrag, DragSourceMonitor, XYCoord, useDrop } from 'react-dnd'
 
 import Card from './Card'
 import { draggableCard, sortCardC } from '../../types/card'
-import GameContext from '../../contexts/GameContext'
 
 import AudioPlayerContext from '../../contexts/AudioContext'
 import useDragDrop from '../../hooks/useDragDrop'
 import useQueue from '../../hooks/useQueue'
+import { useRootSelector } from '../../hooks/useRootState'
 
 export default function SortableCard({
   type, index, cardIndex, temp, parent
 }: sortCardC) {
-  const { playArray } = React.useContext(GameContext)
   const { play } = React.useContext(AudioPlayerContext)
-  
+
   const { data: queue, tempQueue, addQueue, replaceQueue, setQueue } = useQueue()
   const { draggingIndex, onDrag, onDrop } = useDragDrop()
+  const playingQueue = useRootSelector(state => state.game.playingQueue)
   
   const ref = React.useRef<HTMLDivElement>(null);
   const [{ isOverCurrent }, drop] = useDrop({
@@ -107,7 +107,7 @@ export default function SortableCard({
       position: 'relative'
     }}>
       <Card
-        active={playArray[0] === cardIndex}
+        active={playingQueue[0] === cardIndex}
         cardIndex={cardIndex}
         type={type}
         temp={temp}

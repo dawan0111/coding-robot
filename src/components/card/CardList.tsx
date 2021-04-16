@@ -33,7 +33,7 @@ type Props = {
   parent?: number
 }
 
-export function SortCardList({ parent }: Props) {
+export const SortCardList = React.memo(function({ parent }: Props) {
   const {
     data: queue,
     tempQueue,
@@ -153,7 +153,7 @@ export function SortCardList({ parent }: Props) {
       }
     </Wrapper>
   )
-}
+})
 
 export default function CardList({ cards = [] }: Props) {
   return (

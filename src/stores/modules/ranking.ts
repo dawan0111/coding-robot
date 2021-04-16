@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ranking } from '../../types/ranking'
 
 type rankingState = {
-  ranking: {
+  data: {
     [key:string]: ranking[]
   }
 }
 
 const initialState: rankingState = {
-  ranking: JSON.parse(localStorage.getItem('ranking') || '{}')
+  data: JSON.parse(localStorage.getItem('ranking') || '{}')
 }
 
 const rankingSlice = createSlice({
@@ -20,11 +20,12 @@ const rankingSlice = createSlice({
       info: ranking
     }>) {
       const { key, info } = action.payload
-      if (state.ranking[key] === undefined) {
-        state.ranking[key] = []
+      if (state.data[key] === undefined) {
+        state.data[key] = []
       }
 
-      state.ranking[key].push(info)
+      state.data[key].push(info)
+      localStorage.setItem('ranking', JSON.stringify(state.data))
     },
   }
 })
