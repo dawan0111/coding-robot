@@ -5,6 +5,7 @@ import GameContext from '../../contexts/GameContext'
 import MapIcon from './MapIcon'
 
 import MapBgRight from '../../images/bg-right.png'
+import useMap from '../../hooks/useMap'
 
 
 const MapGrid = styled.div<{ x: number, y: number }>`
@@ -60,7 +61,7 @@ type Props = {
 }
 
 export default function Map({ editable = false }: Props) {
-  const { map, mapX, mapY, activeMap, changeActiveMap } = React.useContext(GameContext)
+  const { data: map, x: mapX, y: mapY, active: activeMap, changeActiveOffset } = useMap()
 
   return (
     <MapGrid x={mapX} y={mapY}>
@@ -70,7 +71,7 @@ export default function Map({ editable = false }: Props) {
           active={editable && activeMap === index}
           key={index}
           onClick={() => {
-            editable && changeActiveMap(activeMap === index ? -1 : index);
+            editable && changeActiveOffset(activeMap === index ? -1 : index);
           }}
         >
           <MapIcon type={val} />

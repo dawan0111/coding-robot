@@ -4,6 +4,7 @@ import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch';
 import styled from 'styled-components'
 import { GameContextProvider } from "../contexts/GameContext";
 import useGame from '../hooks/useGame'
+import useMap from "../hooks/useMap";
 import AudioPlayerContext from "../contexts/AudioContext";
 import Map from './game/Map';
 import BluetoothButton from "./game/BluetoothButton";
@@ -139,11 +140,12 @@ function GamePlay() {
 
 function MapEdit() {
   const { startGame } = useGame()
+  const { saveMap } = useMap()
   return (
     <Wrapper>
       <BackButton onClick={() => {
         startGame()
-        // saveMap();
+        saveMap();
       }}><span className="material-icons">keyboard_backspace</span></BackButton>
       <MapEditComponent />
       <MapEditControl />

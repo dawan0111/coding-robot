@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import GameContext from '../../contexts/GameContext'
-import { coins, coinT, isStartCoin } from '../../types/coin'
+import useMap from '../../hooks/useMap'
+import { coins, isStartCoin } from '../../types/coin'
 import MapIcon from './MapIcon'
 
 const MapEditWrapper = styled.div`
@@ -31,7 +32,7 @@ const EditButton = styled.button`
 `
 
 export default function MapEdit() {
-  const { activeMap, updateMap, mapStartIndex, mapEndIndex, mapX, mapY } = React.useContext(GameContext)
+  const { x: mapX, y: mapY, active: activeMap, mapStartIndex, mapEndIndex, updateMap } = useMap()
 
   return (
     <MapEditWrapper>
