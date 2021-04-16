@@ -34,7 +34,6 @@ interface valueT {
   getQueueDeps: (index: number | undefined) => number
   updateQueue: (index: number, payload: card) => void
   deleteQueue: (index: number) => void
-  deleteNextQueue: (index: number) => void
   replaceQueue: (index1: number, index2: number, isFor: boolean, isRight: boolean) => void
   reSortSetQueue: (queue: Array<card>) => void
 
@@ -138,10 +137,6 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     })(index)
 
     reSortSetQueue(changeQueue);
-  }, [reSortSetQueue, queue])
-
-  const deleteNextQueue = React.useCallback((index: number) => {
-    reSortSetQueue(queue.filter(val => val.index < index))
   }, [reSortSetQueue, queue])
 
   const getQueueDeps = React.useCallback((index) => {
@@ -420,7 +415,6 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
       addQueue,
       updateQueue,
       deleteQueue,
-      deleteNextQueue,
       replaceQueue,
       reSortSetQueue,
 
