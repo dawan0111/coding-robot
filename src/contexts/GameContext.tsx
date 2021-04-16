@@ -34,7 +34,7 @@ interface valueT {
   getQueueDeps: (index: number | undefined) => number
   updateQueue: (index: number, payload: card) => void
   deleteQueue: (index: number) => void
-  replaceQueue: (index1: number, index2: number, isFor: boolean, isRight: boolean) => void
+  replaceQueue: (index1: number, index2: number, isRight: boolean) => void
   reSortSetQueue: (queue: Array<card>) => void
 
   putMap: (map: Array<coinT>) => void
@@ -155,7 +155,7 @@ export function GameContextProvider({ children }: React.PropsWithChildren<{}>) {
     return deps;
   }, [queue])
 
-  const replaceQueue = React.useCallback((draggingIndex:number, droppingIndex:number, isFor: boolean, isRight: boolean) => {
+  const replaceQueue = React.useCallback((draggingIndex:number, droppingIndex:number, isRight: boolean) => {
     const movingQueue = queue[draggingIndex];
     const changeParent = queue[droppingIndex].parent;
     const changeQueue = queue.filter((x, index) => index !== draggingIndex && x.index !== Infinity)

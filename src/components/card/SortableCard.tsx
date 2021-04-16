@@ -48,9 +48,9 @@ export default function SortableCard({
         if (hoverIndex === tempQueueIndex || (isRight && hoverIndex + 1 === tempQueueIndex)) return;
 
         if (isRight) {
-          replaceQueue(tempQueueIndex, hoverIndex, false, true)
+          replaceQueue(tempQueueIndex, hoverIndex, true)
         } else {
-          replaceQueue(tempQueueIndex, hoverIndex, false, false)
+          replaceQueue(tempQueueIndex, hoverIndex, false)
         }
       } else {
         if (!tempQueue) {
