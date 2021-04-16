@@ -1,6 +1,5 @@
-import React from 'react'
 import styled from 'styled-components'
-import GameContext from '../../contexts/GameContext'
+import useBluetooth from '../../hooks/useBluetooth'
 
 const Button = styled.button<{ connect: boolean }>`
   border: none;
@@ -15,7 +14,7 @@ const Button = styled.button<{ connect: boolean }>`
 `
 
 export default function BluetoothButton() {
-  const { bluetoothConnect, setBluetoothDevice } = React.useContext(GameContext)
+  const { bluetoothConnect, setBluetoothDevice } = useBluetooth({})
   return (
     <Button connect={bluetoothConnect} onClick={() => setBluetoothDevice()}>
       <span className="material-icons">bluetooth</span>
