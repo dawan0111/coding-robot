@@ -1,5 +1,4 @@
 import React from "react";
-import constate from "constate";
 import { DndProvider } from 'react-dnd-multi-backend';
 import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch'; 
 import styled from 'styled-components'
@@ -94,99 +93,75 @@ const BackButton = styled.button`
   }
 `
 
-const [GameProvider, usePage, useChangePage] = constate(
-  useGame,
-  value => value.page,
-  value => value.setPage
-)
-
 function GameStart() {
-  const page = usePage()
-  const changePage = useChangePage()
   const { play } = React.useContext(AudioPlayerContext)
+  const { startGame } = useGame()
 
   return (
-    <>
-      {
-        page === "GAME_START" &&
-        <StartWrapper>
-          <PlayButton onClick={() => {
-            changePage("GAME_PLAY")
-            play("bgm", {
-              loop: true
-            })
-          }}>
-            <img src={playImg} alt="paly btn"/>
-          </PlayButton>
-        </StartWrapper>
-      }
-    </>
+    <StartWrapper>
+      <PlayButton onClick={() => {
+        startGame()
+        play("bgm", { loop: true })
+      }}>
+        <img src={playImg} alt="paly btn"/>
+      </PlayButton>
+    </StartWrapper>
   )
 }
 
 function GamePlay() {
-  const page = usePage()
-  const changePage = useChangePage()
-
+  const { changeMapEdit } = useGame()
+  
   return (
     <>
-      {page === "GAME_PLAY" &&
-        <Wrapper>
-          <MapWrapper>
-            <StatusBar>
-              <BluetoothButton />
-            </StatusBar>
-            <MapScreen>
-              <SettingButton onClick={() => {
-                changePage("MAP_EDIT")
-              }}>
-                <span className="material-icons">settings</span>
-              </SettingButton>
-              <Map />
-            </MapScreen>
-          </MapWrapper>
-          <ControlWrapper>
-            <Control />
-          </ControlWrapper>
-        </Wrapper>
-      }
+      <Wrapper>
+        <MapWrapper>
+          <StatusBar>
+            <BluetoothButton />
+          </StatusBar>
+          <MapScreen>
+            <SettingButton onClick={() => {
+              changeMapEdit()
+            }}>
+              <span className="material-icons">settings</span>
+            </SettingButton>
+            <Map />
+          </MapScreen>
+        </MapWrapper>
+        <ControlWrapper>
+          <Control />
+        </ControlWrapper>
+      </Wrapper>
       <ResultModal />
     </>
   )
 }
 
 function MapEdit() {
-  const page = usePage()
-  const changePage = useChangePage()
-
+  const { startGame } = useGame()
   return (
-    <>
-      {
-        page === "MAP_EDIT" &&
-        <Wrapper>
-          <BackButton onClick={() => {
-            changePage("GAME_PLAY");
-            // saveMap();
-          }}><span className="material-icons">keyboard_backspace</span></BackButton>
-          <MapEditComponent />
-          <MapEditControl />
-        </Wrapper>
-      }
-    </>
+    <Wrapper>
+      <BackButton onClick={() => {
+        startGame()
+        // saveMap();
+      }}><span className="material-icons">keyboard_backspace</span></BackButton>
+      <MapEditComponent />
+      <MapEditControl />
+    </Wrapper>
   )
 }
 
 export default function Game() {
+  const { page } = useGame();
+
   return (
-    <GameProvider>
-      <GameContextProvider>
-        <DndProvider options={HTML5toTouch}>
-          <CustomDragLayer snapToGrid={false} />
-          <GamePlay />
-          <MapEdit />
-          <GameStart />
-        </DndProvider>
-      </GameContextProvider>
-    </GameProvider>
+    <GameContextProvider>
+      <DndProvider options={HTML5toTouch}>
+        <CustomDragLayer snapToGrid={false} />
+        {page === "GAME_PLAY" && <GamePlay />}
+        {page === "MAP_EDIT" && <MapEdit />}
+        {page === "GAME_START" && <GameStart />}
+      </DndProvider>
+    </GameContextProvider>
   )
 }

@@ -3,14 +3,11 @@ import { page } from '../../types/page'
 
 type gameState = {
   page: page
-  bgm: boolean
   resultVisible: boolean
 }
 
 const initialState: gameState = {
   page: 'GAME_START',
-
-  bgm: false,
   resultVisible: false
 }
 
@@ -18,16 +15,23 @@ const gameSlice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    start(state, action: PayloadAction<boolean>) {
+    start(state) {
       state.page = 'GAME_PLAY'
-      state.bgm = action.payload
     },
 
     mapEdit(state) {
       state.page = 'MAP_EDIT'
+    },
+
+    toggleResult(state, action: PayloadAction<boolean | undefined>) {
+      if (action.payload === undefined) {
+        state.resultVisible = !state.resultVisible
+      } else {
+        state.resultVisible = action.payload
+      }
     }
   }
 })
 
-export const { start, mapEdit } = gameSlice.actions
+export const { start, mapEdit, toggleResult } = gameSlice.actions
 export default gameSlice.reducer
