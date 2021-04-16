@@ -10,9 +10,9 @@ type gameState = {
 }
 
 const initialState: gameState = {
-  page: 'GAME_PLAY',
+  page: 'GAME_START',
   resultVisible: false,
-  DEBUG: true,
+  DEBUG: false,
 
   playingQueue: []
 }
