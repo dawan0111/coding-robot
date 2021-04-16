@@ -1,31 +1,25 @@
+import _ from 'lodash'
 import React from 'react'
-import { getEmptyImage } from 'react-dnd-html5-backend'
+
 import { useDrag, DragSourceMonitor, XYCoord, useDrop } from 'react-dnd'
 
 import Card from './Card'
 import { draggableCard, sortCardC } from '../../types/card'
 import GameContext from '../../contexts/GameContext'
-import _ from 'lodash'
+
 import AudioPlayerContext from '../../contexts/AudioContext'
+import useDragDrop from '../../hooks/useDragDrop'
+import useQueue from '../../hooks/useQueue'
 
 
 export default function SortableCard({
   type, index, cardIndex, temp, parent
 }: sortCardC) {
-  const {
-    queue,
-    playArray,
-    tempQueue,
-
-    addQueue,
-    changeDraggingIndex,
-    replaceQueue,
-    reSortSetQueue,
-
-    draggingIndex
-
-  } = React.useContext(GameContext)
+  const { playArray } = React.useContext(GameContext)
   const { play } = React.useContext(AudioPlayerContext)
+  
+  const { data: queue, tempQueue, addQueue, replaceQueue, setQueue } = useQueue()
+  const { draggingIndex, onDrag, onDrop } = useDragDrop()
   
   const ref = React.useRef<HTMLDivElement>(null);
   const [{ isOverCurrent }, drop] = useDrop({
@@ -63,7 +57,7 @@ export default function SortableCard({
     drop(item: draggableCard, monitor) {
       if (monitor.didDrop() || !ref.current) return;
 
-      reSortSetQueue(
+      setQueue(
         queue
           .map((val) => {
             return val.parent === draggingIndex ? ({
@@ -85,7 +79,7 @@ export default function SortableCard({
     })
   })
 
-  const [{ isDragging }, drag] = useDrag({
+  const [, drag] = useDrag({
     item: {
       type: "sortCard",
       aIndex: index,
@@ -94,10 +88,10 @@ export default function SortableCard({
       data: { type }
     },
     begin: (monitor: DragSourceMonitor) => {
-      if (cardIndex) changeDraggingIndex(cardIndex)
+      if (cardIndex) onDrag(cardIndex)
     },
     end: () => {
-      changeDraggingIndex(Infinity)
+      onDrop()
     },
     collect: (monitor: DragSourceMonitor) => ({
       isDragging: monitor.isDragging(),

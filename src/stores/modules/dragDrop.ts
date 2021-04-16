@@ -15,8 +15,12 @@ const dragDropSlice = createSlice({
     drag(state, action: PayloadAction<number>) {
       state.draggingIndex = action.payload
     },
+
+    drop(state) {
+      state.draggingIndex = Infinity
+    }
   }
 })
 
-export const { drag } = dragDropSlice.actions
+export const { drag, drop } = dragDropSlice.actions
 export default dragDropSlice.reducer

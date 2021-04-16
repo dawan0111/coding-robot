@@ -7,7 +7,7 @@ type gameState = {
 }
 
 const initialState: gameState = {
-  page: 'GAME_START',
+  page: 'GAME_PLAY',
   resultVisible: false
 }
 

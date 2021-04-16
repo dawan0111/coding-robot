@@ -84,10 +84,14 @@ const queueSlice = createSlice({
         ...middleQueue,
         ...changeQueue.slice(droppingIndex + isFront)
       ]
+    },
+
+    set(state, action: PayloadAction<card[]>) {
+      state.data = reSortQueue(action.payload)
     }
   }
 })
 
-export const { add, update, replace, remove } = queueSlice.actions
+export const { add, update, replace, remove, set } = queueSlice.actions
 export default queueSlice.reducer
 
