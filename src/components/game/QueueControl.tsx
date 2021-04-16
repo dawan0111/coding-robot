@@ -1,13 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import GameContext from '../../contexts/GameContext'
 import Card from '../card/Card'
 
-
 import { SortCardList } from '../card/CardList'
-import PushButton from './PushButton'
-
-import resetImg from '../../images/reset.svg'
 import PlayButton from './PlayButton'
 
 const QueueForm = styled.div`

@@ -7,9 +7,7 @@ import { cardType, draggableCard } from "../../types/card";
 
 import DraggableCard from "../card/DraggableCard";
 import QueueControl from "./QueueControl";
-import GameContext from "../../contexts/GameContext";
 import AudioPlayerContext from "../../contexts/AudioContext";
-import useQueue from "../../hooks/useQueue";
 import { useDispatch } from "react-redux";
 import { remove } from "../../stores/modules/queue";
 

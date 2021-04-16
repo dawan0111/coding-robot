@@ -2,7 +2,6 @@ import React from "react";
 import { DndProvider } from 'react-dnd-multi-backend';
 import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch'; 
 import styled from 'styled-components'
-import { GameContextProvider } from "../contexts/GameContext";
 import AudioPlayerContext from "../contexts/AudioContext";
 import Map from './game/Map';
 import BluetoothButton from "./game/BluetoothButton";
@@ -159,13 +158,11 @@ export default function Game() {
   const page = useRootSelector(state => state.game.page);
 
   return (
-    <GameContextProvider>
-      <DndProvider options={HTML5toTouch}>
-        <CustomDragLayer snapToGrid={false} />
-        {page === "GAME_PLAY" && <GamePlay />}
-        {page === "MAP_EDIT" && <MapEdit />}
-        {page === "GAME_START" && <GameStart />}
-      </DndProvider>
-    </GameContextProvider>
+    <DndProvider options={HTML5toTouch}>
+      <CustomDragLayer snapToGrid={false} />
+      {page === "GAME_PLAY" && <GamePlay />}
+      {page === "MAP_EDIT" && <MapEdit />}
+      {page === "GAME_START" && <GameStart />}
+    </DndProvider>
   )
 }
