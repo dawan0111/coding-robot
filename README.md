@@ -1,4 +1,6 @@
 # 교육용 로봇
+[![play.gif](./git_assets/play.gif)](https://postimg.cc/0rqk7Czv)
+
 https://dawan0111.github.io/coding-robot/
 
 Web bluetooth API를 활용하여 bluetooth Module HM-10과 통신 할 수 있는 웹페이지
